@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RianCode - เรียนรู้การเขียนโค้ดอย่างสนุกสนาน</title>
+    <meta name="description" content="แพลตฟอร์มเรียนเขียนโปรแกรมที่มาพร้อมกับระบบ Gamification ช่วยให้คุณสนุกกับการเขียนโค้ดและพัฒนาทักษะไปพร้อมกัน">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="frontend/assets/css/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <span class="logo-icon">&lt;/&gt;</span>
+                RianCode
+            </a>
+            <div class="nav-links" id="navLinks">
+                <a href="frontend/pages/roadmap.html">Roadmap</a>
+                <a href="#">บทเรียน</a>
+                <a href="#">แบบฝึกหัด</a>
+                <a href="#">กระดานผู้นำ</a>
+            </div>
+            <div class="nav-actions">
+                <button class="btn btn-outline">เข้าสู่ระบบ</button>
+                <button class="btn btn-primary">เริ่มเรียนฟรี</button>
+            </div>
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">🚀 แพลตฟอร์มเรียนโค้ดดิ้งโฉมใหม่</div>
+            <h1 class="hero-title">
+                ปลดล็อกศักยภาพ<br>
+                <span class="text-gradient">การเขียนโค้ดของคุณ</span>
+            </h1>
+            <p class="hero-subtitle">
+                เรียนรู้ ฝึกฝน และก้าวสู่การเป็นนักพัฒนาซอฟต์แวร์มืออาชีพผ่านเส้นทางการเรียนรู้ที่ออกแบบมาเพื่อคุณ พร้อมระบบ Gamification ที่ทำให้การเรียนไม่น่าเบื่ออีกต่อไป
+            </p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary btn-large">
+                    เริ่มต้นการผจญภัย
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
+                <button class="btn btn-secondary btn-large">ดูหลักสูตรทั้งหมด</button>
+            </div>
+        </div>
+        
+        <!-- Animated Code Window -->
+        <div class="hero-visual">
+            <div class="code-window">
+                <div class="window-header">
+                    <div class="window-dots">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <div class="window-title">main.js</div>
+                </div>
+                <div class="window-body">
+                    <pre><code class="language-js">
+<span class="keyword">function</span> <span class="function">startJourney</span>(<span class="parameter">developer</span>) {
+  <span class="keyword">if</span> (!developer.skills.includes(<span class="string">'coding'</span>)) {
+    <span class="function">learn</span>(<span class="string">'JavaScript'</span>);
+    <span class="function">practice</span>(<span class="string">'Algorithms'</span>);
+  }
+  
+  <span class="keyword">return</span> <span class="string">'Ready to build the future!'</span>;
+}
+
+<span class="comment">// เริ่มต้นการผจญภัยของคุณได้ที่นี่</span>
+<span class="function">startJourney</span>(<span class="keyword">new</span> <span class="class">Developer</span>());
+                    </code></pre>
+                </div>
+            </div>
+            <!-- Floating elements -->
+            <div class="floating-element html-icon">&lt;html&gt;</div>
+            <div class="floating-element css-icon">{css}</div>
+            <div class="floating-element js-icon">JS</div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section class="features">
+        <h2 class="section-title">ทำไมต้องเรียนกับ <span class="text-gradient">RianCode</span></h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🗺️</div>
+                <h3>Roadmap ที่ชัดเจน</h3>
+                <p>เรียนรู้ตามลำดับขั้นตอนที่ถูกต้อง ไม่ต้องงมหาเส้นทางเอง ตั้งแต่พื้นฐานจนถึงระดับสูง</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎮</div>
+                <h3>Gamification</h3>
+                <p>สนุกไปกับการเก็บ XP, สะสม Badge, และไต่อันดับใน Leaderboard ทุกครั้งที่แก้โจทย์สำเร็จ</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💻</div>
+                <h3>ลงมือทำจริง</h3>
+                <p>พิมพ์โค้ดและดูผลลัพธ์ได้ทันทีบนเบราว์เซอร์ พร้อมแบบฝึกหัดที่ท้าทายความคิด</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Supabase & App Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="frontend/assets/js/supabaseClient.js"></script>
+    <script src="frontend/assets/js/auth.js"></script>
+    <script src="frontend/assets/js/main.js"></script>
+</body>
+</html>

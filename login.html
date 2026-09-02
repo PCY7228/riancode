@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบ - RianCode</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="frontend/assets/css/style.css">
+    
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .auth-card {
+            background: var(--surface-color);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--surface-border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .auth-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            display: inline-block;
+        }
+
+        .auth-logo .logo-icon {
+            color: var(--primary-color);
+            font-family: var(--font-mono);
+        }
+
+        .auth-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--surface-border);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--text-primary);
+            font-family: var(--font-ui);
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-full {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 1.5rem 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--surface-border);
+        }
+
+        .divider::before { margin-right: .5em; }
+        .divider::after { margin-left: .5em; }
+
+        .btn-google {
+            background: white;
+            color: #444;
+            border: 1px solid #ddd;
+        }
+
+        .btn-google:hover {
+            background: #f9f9f9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .btn-google img {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+        }
+
+        .auth-switch {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .auth-switch a {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        #errorMessage {
+            color: #ef4444;
+            background: #fef2f2;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-link:hover {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <a href="index.html" class="back-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            กลับหน้าหลัก
+        </a>
+
+        <div class="auth-card">
+            <a href="index.html" class="auth-logo">
+                <span class="logo-icon">&lt;/&gt;</span> RianCode
+            </a>
+            
+            <h1 class="auth-title" id="authTitle">เข้าสู่ระบบ</h1>
+            <p class="auth-subtitle" id="authSubtitle">ยินดีต้อนรับกลับมา! กรุณาเข้าสู่ระบบเพื่อเรียนต่อ</p>
+            
+            <div id="errorMessage"></div>
+
+            <form id="authForm">
+                <div class="form-group" id="nameField" style="display: none;">
+                    <label for="fullName">ชื่อ-นามสกุล</label>
+                    <input type="text" id="fullName" class="form-control" placeholder="กรอกชื่อ-นามสกุลของคุณ">
+                </div>
+                <div class="form-group">
+                    <label for="email">อีเมล</label>
+                    <input type="email" id="email" class="form-control" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">รหัสผ่าน</label>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-full" id="submitBtn">เข้าสู่ระบบ</button>
+            </form>
+
+            <div class="divider">หรือ</div>
+
+            <button class="btn btn-google btn-full" id="googleLoginBtn">
+                <img src="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png" alt="Google">
+                เข้าสู่ระบบด้วย Google
+            </button>
+
+            <div class="auth-switch">
+                <span id="switchText">ยังไม่มีบัญชีผู้ใช้?</span> 
+                <a href="#" id="switchModeBtn">สมัครสมาชิก</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Scripts -->
+    <script src="frontend/assets/js/supabaseClient.js"></script>
+    <script src="frontend/assets/js/auth.js"></script>
+</body>
+</html>
