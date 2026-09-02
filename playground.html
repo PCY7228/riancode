@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบฝึกหัด - RianCode Playground</title>
+    <link rel="icon" type="image/png" href="frontend/assets/img/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-panel: #1e293b;
+            --bg-hover: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #10b981;
+            --primary-hover: #059669;
+            --border-color: #334155;
+            --font-ui: 'Inter', 'Sarabun', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-ui);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Navigation */
+        .playground-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--bg-panel);
+            border-bottom: 1px solid var(--border-color);
+            height: 60px;
+            box-sizing: border-box;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--bg-hover);
+            color: var(--text-main);
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .btn-back:hover {
+            background: #475569;
+        }
+
+        .exercise-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .difficulty-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            font-weight: 600;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: var(--font-ui);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            transition: 0.2s;
+        }
+
+        .btn-secondary {
+            background: var(--bg-hover);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        /* Split Layout */
+        .playground-container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 60px);
+        }
+
+        /* Left Panel - Instructions */
+        .panel-instructions {
+            width: 40%;
+            background-color: var(--bg-dark);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .instruction-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--bg-panel);
+        }
+
+        .tab {
+            padding: 0.75rem 1.25rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .instruction-content {
+            padding: 2rem;
+        }
+
+        .instruction-content h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .instruction-content p {
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .code-example {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .code-example h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .code-example pre {
+            margin: 0;
+            font-family: var(--font-code);
+            font-size: 0.9rem;
+            color: #e2e8f0;
+        }
+
+        /* Right Panel - Editor & Console */
+        .panel-workspace {
+            width: 60%;
+            display: flex;
+            flex-direction: column;
+            background-color: #1e1e1e; /* VS Code dark color */
+        }
+
+        .editor-header {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background-color: #252526;
+            border-bottom: 1px solid #333;
+        }
+
+        .file-tab {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: #1e1e1e;
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            font-family: var(--font-code);
+            color: #e2e8f0;
+            border-top: 2px solid var(--primary);
+        }
+
+        .editor-area {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .line-numbers {
+            position: absolute;
+            left: 0;
+            top: 1rem;
+            bottom: 0;
+            width: 40px;
+            text-align: right;
+            padding-right: 10px;
+            color: #858585;
+            font-family: var(--font-code);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            user-select: none;
+        }
+
+        .code-input {
+            margin-left: 45px;
+            font-family: var(--font-code);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #d4d4d4;
+            white-space: pre;
+            outline: none;
+        }
+
+        /* Syntax Highlighting Mock */
+        .keyword { color: #569cd6; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .operator { color: #d4d4d4; }
+        .number { color: #b5cea8; }
+
+        /* Console */
+        .console-area {
+            height: 250px;
+            background-color: #000000;
+            border-top: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .console-header {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background-color: #252526;
+            font-size: 0.85rem;
+            color: #ccc;
+            gap: 1rem;
+        }
+
+        .console-output {
+            padding: 1rem;
+            font-family: var(--font-code);
+            font-size: 0.9rem;
+            color: #ccc;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .output-success {
+            color: #10b981;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .playground-container {
+                flex-direction: column;
+            }
+            .panel-instructions, .panel-workspace {
+                width: 100%;
+                height: 50%;
+            }
+            .panel-instructions { border-right: none; border-bottom: 1px solid var(--border-color); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation -->
+    <header class="playground-nav">
+        <div class="nav-left">
+            <a href="exercises.html" class="btn-back">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            </a>
+            <h1 class="exercise-title">Basic: ผลรวมของสองจำนวน</h1>
+            <span class="difficulty-badge">ง่าย</span>
+        </div>
+        <div class="nav-right">
+            <button class="btn btn-secondary" onclick="alert('แสดงคำใบ้ AI Mock')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                คำใบ้
+            </button>
+            <button class="btn btn-secondary" onclick="runCode()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                รันโค้ด
+            </button>
+            <button class="btn btn-primary" onclick="submitCode()">
+                ส่งคำตอบ
+            </button>
+        </div>
+    </header>
+
+    <!-- Split Layout -->
+    <div class="playground-container">
+        
+        <!-- Left Panel: Instructions -->
+        <div class="panel-instructions">
+            <div class="instruction-tabs">
+                <div class="tab active">โจทย์ปัญหา</div>
+                <div class="tab">ประวัติการส่ง</div>
+            </div>
+            
+            <div class="instruction-content">
+                <h2>ผลรวมของสองจำนวน</h2>
+                <p>จงเขียนฟังก์ชัน <code>sum_numbers(a, b)</code> ในภาษา Python เพื่อรับค่าตัวเลขสองตัว (a และ b) และส่งคืนผลรวมของตัวเลขทั้งสอง</p>
+                
+                <div class="code-example">
+                    <h4>ตัวอย่างที่ 1</h4>
+                    <pre>Input: a = 3, b = 5
+Output: 8</pre>
+                </div>
+
+                <div class="code-example">
+                    <h4>ตัวอย่างที่ 2</h4>
+                    <pre>Input: a = -2, b = 10
+Output: 8</pre>
+                </div>
+
+                <p style="font-size: 0.9rem; color: #94a3b8; margin-top: 2rem;">
+                    <strong>เงื่อนไข:</strong> <br>
+                    -1000 <= a, b <= 1000
+                </p>
+            </div>
+        </div>
+
+        <!-- Right Panel: Editor & Console -->
+        <div class="panel-workspace">
+            <!-- Editor -->
+            <div class="editor-header">
+                <div class="file-tab">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#facc15" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    main.py
+                </div>
+            </div>
+            
+            <div class="editor-area">
+                <div class="line-numbers">
+                    1<br>2<br>3<br>4
+                </div>
+                <div class="code-input" contenteditable="true" spellcheck="false" id="codeEditor">
+<span class="keyword">def</span> <span class="function">sum_numbers</span>(a, b):
+    <span class="comment"># เขียนโค้ดของคุณที่นี่</span>
+    <span class="keyword">return</span> a <span class="operator">+</span> b
+</div>
+            </div>
+
+            <!-- Console -->
+            <div class="console-area">
+                <div class="console-header">
+                    <div>Terminal</div>
+                    <div style="margin-left: auto; cursor: pointer; color: #64748b;">Clear</div>
+                </div>
+                <div class="console-output" id="consoleOutput">
+                    &gt; รอการรันโค้ด...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function runCode() {
+            const output = document.getElementById('consoleOutput');
+            output.innerHTML = '&gt; กำลังประมวลผล...<br>';
+            
+            setTimeout(() => {
+                output.innerHTML += '<span style="color:#d4d4d4;">Test Case 1: a=3, b=5</span><br>';
+                output.innerHTML += '<span style="color:#d4d4d4;">Output: 8</span><br>';
+                output.innerHTML += '<span class="output-success">✔ ผ่าน (1ms)</span><br><br>';
+                output.innerHTML += '<span style="color:#d4d4d4;">Test Case 2: a=-2, b=10</span><br>';
+                output.innerHTML += '<span style="color:#d4d4d4;">Output: 8</span><br>';
+                output.innerHTML += '<span class="output-success">✔ ผ่าน (0ms)</span>';
+            }, 600);
+        }
+
+        function submitCode() {
+            const output = document.getElementById('consoleOutput');
+            output.innerHTML = '&gt; กำลังตรวจสอบความถูกต้องทั้งหมด (Submitting)...<br>';
+            
+            setTimeout(() => {
+                output.innerHTML += '<br><span class="output-success" style="font-size: 1.1rem; font-weight: bold;">🎉 ยินดีด้วย! โค้ดของคุณทำงานถูกต้องทั้งหมด</span><br>';
+                output.innerHTML += '<span style="color:#10b981;">+15 XP</span>';
+                
+                // Show celebration alert
+                setTimeout(() => {
+                    alert('🎉 ยินดีด้วยคุณผ่านแบบทดสอบนี้แล้ว! รับไปเลย 15 XP');
+                }, 500);
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

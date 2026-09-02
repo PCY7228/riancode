@@ -1,0 +1,1764 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started with Python - RianCode</title>
+    <link rel="icon" type="image/png" href="frontend/assets/img/logo.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- Canvas Confetti CDN for celebratory effects -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* ===== Lesson Page Full Height Layout ===== */
+        body {
+            background-color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .lesson-layout {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* ===== Top Navbar ===== */
+        .lesson-navbar {
+            height: 64px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            z-index: 50;
+            flex-shrink: 0;
+        }
+
+        .lesson-nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #475569;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.45rem 0.85rem;
+            border-radius: 9px;
+            background: #f1f5f9;
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .lesson-course-title {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .lesson-course-badge {
+            background: rgba(16, 185, 129, 0.12);
+            color: #059669;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+        }
+
+        .lesson-nav-center {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 320px;
+        }
+
+        .lesson-progress-bar-bg {
+            flex: 1;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .lesson-progress-bar-fill {
+            height: 100%;
+            width: 40%;
+            background: linear-gradient(135deg, #059669, #10b981);
+            border-radius: 99px;
+            transition: width 0.3s;
+        }
+
+        .lesson-progress-text {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #64748b;
+            white-space: nowrap;
+        }
+
+        .lesson-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+        }
+
+        /* Upgrade PRO Button */
+        .btn-upgrade-nav {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #ffffff !important;
+            padding: 0.45rem 0.95rem;
+            border-radius: 99px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-decoration: none !important;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            border: none;
+            white-space: nowrap;
+        }
+
+        .btn-upgrade-nav:hover {
+            transform: translateY(-1px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+            background: linear-gradient(135deg, #fbbf24, #d97706);
+        }
+
+        /* Profile Dropdown Fix */
+        .profile-dropdown {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .profile-dropdown-menu {
+            display: none !important;
+            position: absolute;
+            right: 0;
+            top: calc(100% + 12px);
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            min-width: 180px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 9999;
+            overflow: hidden;
+            flex-direction: column;
+            padding: 0.4rem 0;
+        }
+
+        .profile-dropdown-menu.show {
+            display: flex !important;
+            animation: dropdownFadeIn 0.2s ease;
+        }
+
+        @keyframes dropdownFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-dropdown-menu .dropdown-item {
+            padding: 0.65rem 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #334155;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+            transition: all 0.15s;
+        }
+
+        .profile-dropdown-menu .dropdown-item:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 0.35rem 0;
+        }
+
+        /* ===== Main Split Workspace ===== */
+        .workspace-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* ===== Left Panel: Chapter Topics & Content ===== */
+        .left-panel {
+            width: 52%;
+            display: flex;
+            border-right: 1.5px solid #e2e8f0;
+            background: white;
+        }
+
+        /* Topics Drawer Sub-Sidebar */
+        .topics-sidebar {
+            width: 240px;
+            border-right: 1px solid #f1f5f9;
+            background: #fafbfc;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .topics-sidebar-header {
+            padding: 1.25rem 1rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .topics-list {
+            list-style: none;
+            padding: 0 0.5rem;
+            margin: 0;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .topic-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.75rem 0.85rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.18s;
+            margin-bottom: 0.25rem;
+            text-decoration: none;
+        }
+
+        .topic-item:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .topic-item.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            font-weight: 700;
+        }
+
+        .topic-status-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .topic-item.completed .topic-status-icon {
+            background: #10b981;
+            color: white;
+        }
+
+        .topic-item.active .topic-status-icon {
+            background: #059669;
+            color: white;
+        }
+
+        .topic-item.locked .topic-status-icon {
+            background: #e2e8f0;
+            color: #94a3b8;
+        }
+
+        /* Main Reading Content */
+        .content-scroll-area {
+            flex: 1;
+            padding: 2rem 2.5rem;
+            overflow-y: auto;
+        }
+
+        .content-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #059669;
+            background: #ecfdf5;
+            padding: 0.3rem 0.75rem;
+            border-radius: 99px;
+            margin-bottom: 1rem;
+        }
+
+        .content-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 1.25rem;
+            line-height: 1.3;
+        }
+
+        .content-text {
+            font-size: 0.96rem;
+            line-height: 1.75;
+            color: #334155;
+            margin-bottom: 1.5rem;
+        }
+
+        .code-snippet-box {
+            background: #1e1e1e;
+            border: 1px solid #2d2d2d;
+            border-radius: 10px;
+            padding: 1.25rem 1.5rem;
+            margin: 1.25rem 0;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.92rem;
+            line-height: 1.7;
+            color: #d4d4d4;
+            overflow-x: auto;
+            white-space: pre;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .code-snippet-box .code-lang-tag {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.8rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #858585;
+            text-transform: uppercase;
+        }
+
+        .callout-tip {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem 1.25rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+            color: #1e40af;
+        }
+
+        .callout-tip strong {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .content-footer-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .btn-topic-nav {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.25rem;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #475569;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-topic-nav:hover {
+            background: #f8fafc;
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+
+        .btn-topic-nav.next-btn {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-topic-nav.next-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+        }
+
+        /* ===== Right Panel: Interactive VS Code Playground ===== */
+        .right-panel {
+            width: 48%;
+            display: flex;
+            flex-direction: column;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-left: 1px solid #252526;
+            position: relative;
+        }
+
+        .editor-header {
+            height: 42px;
+            background: #252526;
+            border-bottom: 1px solid #1e1e1e;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 0.75rem 0 0;
+            flex-shrink: 0;
+        }
+
+        .editor-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0 1rem;
+            height: 42px;
+            background: #1e1e1e;
+            border-top: 2px solid #007acc;
+            color: #ffffff;
+            font-size: 0.82rem;
+            font-weight: 500;
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+
+        .editor-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-run-code {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.85rem;
+            background: #0e639c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-run-code:hover {
+            background: #1177bb;
+        }
+
+        .btn-submit-code {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.85rem;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-submit-code:hover {
+            background: #059669;
+        }
+
+        /* Code Textarea & Overlay Container */
+        .editor-body {
+            flex: 1;
+            display: flex;
+            position: relative;
+            background: #1e1e1e;
+            overflow: hidden;
+        }
+
+        .line-numbers {
+            width: 48px;
+            padding: 1.25rem 0;
+            background: #1e1e1e;
+            color: #858585;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.94rem;
+            line-height: 1.65;
+            text-align: right;
+            padding-right: 0.85rem;
+            user-select: none;
+            border-right: 1px solid #2d2d2d;
+            flex-shrink: 0;
+        }
+
+        .code-editor-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: #1e1e1e;
+        }
+
+        .code-highlight-overlay,
+        .code-input-textarea {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 1.25rem 1rem;
+            margin: 0;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.94rem;
+            font-weight: 500;
+            line-height: 1.65;
+            tab-size: 4;
+            white-space: pre;
+            overflow: auto;
+            box-sizing: border-box;
+        }
+
+        .code-highlight-overlay {
+            z-index: 1;
+            pointer-events: none;
+            color: #d4d4d4;
+            background: transparent;
+        }
+
+        .code-input-textarea {
+            z-index: 2;
+            background: transparent;
+            color: transparent;
+            caret-color: #aeafad;
+            border: none;
+            outline: none;
+            resize: none;
+        }
+
+        .code-input-textarea::selection {
+            background: rgba(38, 79, 120, 0.7);
+        }
+
+        /* Official VS Code Dark+ Syntax Theme Colors */
+        .vs-comment {
+            color: #6A9955;
+            font-style: italic;
+        }
+
+        /* VS Code Green Comments */
+        .vs-keyword {
+            color: #569CD6;
+        }
+
+        /* VS Code Keyword Blue (def, import, class) */
+        .vs-control {
+            color: #C586C0;
+        }
+
+        /* VS Code Control Magenta (if, else, return) */
+        .vs-string {
+            color: #CE9178;
+        }
+
+        /* VS Code String Warm Terracotta */
+        .vs-number {
+            color: #B5CEA8;
+        }
+
+        /* VS Code Number Light Sage Green */
+        .vs-function {
+            color: #DCDCAA;
+        }
+
+        /* VS Code Function Warm Yellow */
+        .vs-variable {
+            color: #9CDCFE;
+        }
+
+        /* VS Code Variable Light Sky Blue */
+        .vs-operator {
+            color: #D4D4D4;
+        }
+
+        /* VS Code Operator Light Gray */
+        .vs-fvar {
+            color: #9CDCFE;
+        }
+
+        /* VS Code F-string Expr Light Sky Blue */
+
+        /* Terminal Panel */
+        .terminal-panel {
+            height: 170px;
+            background: #181818;
+            border-top: 1px solid #2d2d2d;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        /* ===== Floating Side/Bottom AI Tutor Widget (Premium Redesign) ===== */
+        .ai-tutor-panel {
+            position: absolute;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1000;
+            width: 400px;
+            max-width: calc(100% - 48px);
+            background: rgba(20, 20, 32, 0.96);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.25);
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .ai-tutor-panel.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .ai-tutor-header {
+            padding: 0.75rem 1.15rem;
+            background: linear-gradient(90deg, #1e1b4b, #151522);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .ai-tutor-title {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: #a5b4fc;
+        }
+
+        .btn-close-ai {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 0.9rem;
+            cursor: pointer;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-close-ai:hover {
+            color: #ffffff;
+            background: rgba(239, 68, 68, 0.25);
+            border-color: rgba(239, 68, 68, 0.4);
+            transform: scale(1.05);
+        }
+
+        .ai-tutor-body {
+            padding: 1rem 1.15rem;
+            max-height: 230px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        /* Custom Dark Sleek Scrollbar */
+        .ai-tutor-body::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .ai-tutor-body::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .ai-tutor-body::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 99px;
+        }
+
+        .ai-tutor-body::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.5);
+        }
+
+        .ai-msg {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+        }
+
+        .ai-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+        }
+
+        .ai-bubble {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 0.86rem;
+            line-height: 1.65;
+            color: #e2e8f0;
+            flex: 1;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .ai-bubble.error-hint {
+            background: rgba(127, 29, 29, 0.35);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
+        }
+
+        .ai-bubble.success-hint {
+            background: rgba(6, 78, 59, 0.35);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #a7f3d0;
+        }
+
+        /* Dedicated Action Toolbar at Card Bottom */
+        .ai-tutor-footer {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1rem;
+            background: rgba(15, 23, 42, 0.8);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-ai-action {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.45rem 0.75rem;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-ai-hint {
+            background: rgba(245, 158, 11, 0.18);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+
+        .btn-ai-hint:hover {
+            background: rgba(245, 158, 11, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-ai-check {
+            background: rgba(99, 102, 241, 0.2);
+            color: #c7d2fe;
+            border: 1px solid rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-ai-check:hover {
+            background: rgba(99, 102, 241, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .ai-msg {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+
+        .ai-avatar {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+        }
+
+        .ai-bubble {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 0.65rem 0.9rem;
+            border-radius: 0 12px 12px 12px;
+            color: #e2e8f0;
+            flex: 1;
+        }
+
+        .ai-bubble.error-hint {
+            background: #2d1215;
+            border-color: #7f1d1d;
+            color: #fca5a5;
+        }
+
+        .ai-bubble.success-hint {
+            background: #064e3b;
+            border-color: #047857;
+            color: #a7f3d0;
+        }
+
+        .terminal-header {
+            padding: 0.5rem 1rem;
+            background: #0f172a;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .terminal-body {
+            flex: 1;
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #a7f3d0;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .terminal-empty-text {
+            color: #475569;
+            font-style: italic;
+        }
+
+        /* Modal / Toast Notification */
+        .toast-notify {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #10b981;
+            color: white;
+            padding: 0.9rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+            display: none;
+            align-items: center;
+            gap: 0.6rem;
+            z-index: 100;
+            animation: slideUp 0.3s ease;
+        }
+
+        /* Celebratory Success Modal Overlay */
+        .success-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .success-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .success-modal-card {
+            background: linear-gradient(145deg, #1e1b4b, #0f172a);
+            border: 2px solid #10b981;
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 25px 60px rgba(16, 185, 129, 0.35);
+            transform: scale(0.85);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            color: #ffffff;
+        }
+
+        .success-modal-overlay.active .success-modal-card {
+            transform: scale(1);
+        }
+
+        .success-icon-badge {
+            font-size: 3.8rem;
+            margin-bottom: 0.75rem;
+            animation: bounceIcon 1s infinite alternate ease-in-out;
+        }
+
+        @keyframes bounceIcon {
+            from {
+                transform: translateY(0) scale(1);
+            }
+
+            to {
+                transform: translateY(-10px) scale(1.1);
+            }
+        }
+
+        .success-modal-card h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .success-xp-text {
+            font-size: 1.1rem;
+            color: #34d399;
+            margin-bottom: 1.75rem;
+            font-weight: 700;
+        }
+
+        .btn-success-next {
+            width: 100%;
+            padding: 0.85rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+            transition: all 0.2s;
+        }
+
+        .btn-success-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(16, 185, 129, 0.5);
+        }
+
+        @media (max-width: 1024px) {
+            .left-panel {
+                width: 100%;
+                border-right: none;
+            }
+
+            .right-panel {
+                width: 100%;
+                height: 500px;
+            }
+
+            .workspace-container {
+                flex-direction: column;
+                overflow-y: auto;
+            }
+
+            .topics-sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="lesson-layout">
+        <!-- Top Navbar -->
+        <header class="lesson-navbar">
+            <div class="lesson-nav-left">
+                <a href="lessons" class="btn-back">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    กลับหน้ารวมบทเรียน
+                </a>
+                <div class="lesson-course-title">
+                    <span>Getting started with Python</span>
+                    <span class="lesson-course-badge">บทเรียนที่ 1</span>
+                </div>
+            </div>
+
+            <div class="lesson-nav-center">
+                <div class="lesson-progress-bar-bg">
+                    <div class="lesson-progress-bar-fill" id="lessonProgressBar"></div>
+                </div>
+                <span class="lesson-progress-text" id="lessonProgressText">2 / 5 หัวข้อ (40%)</span>
+            </div>
+
+            <div class="lesson-nav-right">
+                <div class="nav-actions dash-nav-actions">
+                    <!-- Injected by auth.js -->
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <div class="workspace-container">
+
+            <!-- Left Panel: Lessons & Syllabus -->
+            <div class="left-panel">
+                <!-- Topics Sidebar Drawer -->
+                <aside class="topics-sidebar">
+                    <div class="topics-sidebar-header">สารบัญบทเรียน</div>
+                    <ul class="topics-list" id="topicsList">
+                        <li class="topic-item completed" data-topic="1.1">
+                            <span class="topic-status-icon">✓</span>
+                            <span>1.1 ทำความรู้จักกับ Python</span>
+                        </li>
+                        <li class="topic-item active" data-topic="1.2">
+                            <span class="topic-status-icon">▶</span>
+                            <span>1.2 ตัวแปรและชนิดข้อมูล</span>
+                        </li>
+                        <li class="topic-item" data-topic="1.3">
+                            <span class="topic-status-icon">•</span>
+                            <span>1.3 การรับค่าและแสดงผล</span>
+                        </li>
+                        <li class="topic-item" data-topic="1.4">
+                            <span class="topic-status-icon">•</span>
+                            <span>1.4 โอเปอเรเตอร์การคำนวณ</span>
+                        </li>
+                        <li class="topic-item" data-topic="1.5">
+                            <span class="topic-status-icon">⭐</span>
+                            <span>1.5 โจทย์แบบฝึกหัดทบทวน</span>
+                        </li>
+                    </ul>
+                </aside>
+
+                <!-- Reading Area -->
+                <div class="content-scroll-area" id="contentScrollArea">
+                    <span class="content-badge" id="topicBadge">📖 บทที่ 1.2</span>
+                    <h1 class="content-title" id="topicTitle">ตัวแปรและชนิดข้อมูล (Variables & Data Types)</h1>
+
+                    <div class="content-text" id="topicIntro">
+                        <p>ในภาษา <strong>Python</strong> การสร้างตัวแปรทำได้ง่ายมาก!
+                            คุณไม่ต้องประกาศชนิดข้อมูลล่วงหน้าเหมือนภาษาอื่น เพียงตั้งชื่อตัวแปร
+                            แล้วใช้เครื่องหมายเท่ากับ <code>=</code> กำหนดค่าได้ทันที</p>
+                    </div>
+
+                    <div class="callout-tip" id="topicTip">
+                        <strong>💡 ข้อควรจำที่สำคัญ:</strong>
+                        ชื่อตัวแปรใน Python ควรเป็นภาษาอังกฤษ ห้ามขึ้นต้นด้วยตัวเลข และไม่ควรเว้นวรรค (สามารถใช้
+                        <code>_</code> เชื่อมคำได้ เช่น <code>user_name</code>)
+                    </div>
+
+                    <h3 style="font-size:1.15rem; font-weight:700; color:#0f172a; margin-top:1.5rem;">
+                        ตัวอย่างการเขียนโค้ดในบทเรียนนี้:</h3>
+
+                    <div class="code-snippet-box" id="topicCodeSnippet">
+                        <span class="code-lang-tag">python</span>
+                        <span style="color:#7dd3fc;"># 1. ข้อความ (String)</span>
+                        <span style="color:#f43f5e;">name</span> = <span style="color:#a5f3fc;">"Somchai"</span>
+
+                        <span style="color:#7dd3fc;"># 2. จำนวนเต็ม (Integer)</span>
+                        <span style="color:#f43f5e;">age</span> = <span style="color:#fde047;">20</span>
+
+                        <span style="color:#7dd3fc;"># 3. ทศนิยม (Float)</span>
+                        <span style="color:#f43f5e;">score</span> = <span style="color:#fde047;">98.5</span>
+
+                        <span style="color:#7dd3fc;"># 4. ค่าความจริง (Boolean)</span>
+                        <span style="color:#f43f5e;">is_passed</span> = <span style="color:#c084fc;">True</span>
+                    </div>
+
+                    <h3 style="font-size:1.15rem; font-weight:700; color:#0f172a; margin-top:2rem;">🎯 ภารกิจลองทำ
+                        (Task):</h3>
+                    <div class="content-text" id="topicTask"
+                        style="background:#f8fafc; padding:1.25rem; border-radius:12px; border:1px solid #e2e8f0;">
+                        <p style="margin:0;">ลองแก้ไขโค้ดที่หน้าจอฝั่งขวามือ ให้ตัวแปร <code>name</code> เป็นชื่อของคุณ
+                            และ <code>score</code> เป็น <strong>100</strong> จากนั้นกดปุ่ม <strong>▶️ รันโค้ด</strong>
+                            เพื่อทดสอบผลลัพธ์!</p>
+                    </div>
+
+                    <div class="content-footer-nav">
+                        <button class="btn-topic-nav" id="btnPrevTopic">
+                            ← 1.1 บทก่อนหน้า
+                        </button>
+                        <button class="btn-topic-nav next-btn" id="btnNextTopic">
+                            1.3 หัวข้อถัดไป →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Code Playground -->
+            <div class="right-panel">
+                <div class="editor-header">
+                    <div class="editor-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                        main.py (Python 3.10)
+                    </div>
+                    <div class="editor-actions">
+                        <button class="btn-run-code" id="btnRunCode">
+                            ▶️ รันโค้ด
+                        </button>
+                        <button class="btn-submit-code" id="btnSubmitCode">
+                            ✔️ ส่งคำตอบ (+20 XP)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Code Editor Textarea -->
+                <div class="editor-body">
+                    <div class="line-numbers" id="lineNumbers">
+                        1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12
+                    </div>
+                    <div class="code-editor-container">
+                        <pre class="code-highlight-overlay" id="codeHighlightOverlay"><code></code></pre>
+                        <textarea class="code-input-textarea" id="codeEditor" spellcheck="false"># บทเรียนที่ 1.2: ลองสร้างตัวแปรและแสดงผล
+name = "RianCode Student"
+score = 100
+
+print(f"สวัสดีคุณ {name}!")
+print(f"คะแนนของคุณคือ: {score} XP")
+</textarea>
+                    </div>
+                </div>
+
+                <!-- AI Tutor Assistant Panel (Opens only on Error or Hint) -->
+                <div class="ai-tutor-panel" id="aiTutorPanel">
+                    <div class="ai-tutor-header">
+                        <div class="ai-tutor-title">
+                            <span>🤖</span>
+                            <span>AI Tutor Assistant</span>
+                        </div>
+                        <button class="btn-close-ai" id="btnCloseAiTutor" title="ปิด AI Tutor">✕</button>
+                    </div>
+                    <div class="ai-tutor-body" id="aiTutorBody">
+                        <div class="ai-msg">
+                            <div class="ai-avatar">🤖</div>
+                            <div class="ai-bubble">
+                                สวัสดีครับ! ผมคือ <strong>AI Tutor</strong> ยินดีช่วยแนะนำเรื่องการเขียนโค้ด สามารถกด
+                                <strong>▶️ รันโค้ด</strong> เพื่อทดสอบได้เลย หากเกิด Error
+                                ผมจะช่วยชี้จุดสังเกตและแนะนำแนวทางแก้ไขให้ครับ!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ai-tutor-footer">
+                        <button class="btn-ai-action btn-ai-hint" id="btnAiHint">💡 ขอคำใบ้ (Hint)</button>
+                        <button class="btn-ai-action btn-ai-check" id="btnAiCheck">🔍 ให้ AI ตรวจโค้ด</button>
+                    </div>
+                </div>
+
+                <!-- Terminal Output Container -->
+                <div class="terminal-panel">
+                    <div class="terminal-header">
+                        <span>Console Output (ผลลัพธ์)</span>
+                        <span style="color:#10b981; font-weight:600;">● Online</span>
+                    </div>
+                    <div class="terminal-body" id="terminalOutput">
+                        <span class="terminal-empty-text">กดปุ่ม "▶️ รันโค้ด" เพื่อดูผลลัพธ์ที่นี่...</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast-notify" id="toastNotify">
+        🎉 ยินดีด้วย! คุณผ่านหัวข้อนี้เรียบร้อยแล้ว (+20 XP)
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="frontend/assets/js/supabaseClient.js"></script>
+    <script src="frontend/assets/js/auth.js"></script>
+    <script>
+        const btnRunCode = document.getElementById('btnRunCode');
+        const btnSubmitCode = document.getElementById('btnSubmitCode');
+        const btnAiHint = document.getElementById('btnAiHint');
+        const btnAiCheck = document.getElementById('btnAiCheck');
+        const codeEditor = document.getElementById('codeEditor');
+        const terminalOutput = document.getElementById('terminalOutput');
+        const aiTutorBody = document.getElementById('aiTutorBody');
+        const toastNotify = document.getElementById('toastNotify');
+
+        // Dynamic Elements
+        const topicBadge = document.getElementById('topicBadge');
+        const topicTitle = document.getElementById('topicTitle');
+        const topicIntro = document.getElementById('topicIntro');
+        const topicTip = document.getElementById('topicTip');
+        const topicCodeSnippet = document.getElementById('topicCodeSnippet');
+        const topicTask = document.getElementById('topicTask');
+        const btnPrevTopic = document.getElementById('btnPrevTopic');
+        const btnNextTopic = document.getElementById('btnNextTopic');
+        const lessonProgressBar = document.getElementById('lessonProgressBar');
+        const lessonProgressText = document.getElementById('lessonProgressText');
+        const topicsList = document.getElementById('topicsList');
+
+        // Mock Topics Data Dictionary
+        const topicData = {
+            "1.1": {
+                badge: "📖 บทที่ 1.1",
+                title: "ทำความรู้จักกับ Python (Introduction to Python)",
+                progressText: "1 / 5 หัวข้อ (20%)",
+                progressWidth: "20%",
+                intro: "<p>ยินดีต้อนรับสู่โลกของการเขียนโค้ด! ภาษา <strong>Python</strong> เป็นภาษาโปรแกรมที่ได้รับความนิยมสูงสุดในปัจจุบัน ด้วยไวยากรณ์ที่อ่านง่ายและกระชับเสมือนภาษาอังกฤษ</p>",
+                tip: "<strong>💡 ข้อควรรู้:</strong> คำสั่ง <code>print()</code> คือคำสั่งพื้นฐานที่สุดที่ใช้สั่งให้คอมพิวเตอร์แสดงผลข้อความออกทางหน้าจอ",
+                rawSnippet: `# คำสั่งแสดงผลข้อความแรกของคุณ
+print("Hello, RianCode World!")
+print("ยินดีต้อนรับสู่การเรียนเขียนโค้ด")`,
+                task: "<p style='margin:0;'>ลองแก้ไขข้อความในคำสั่ง <code>print()</code> ให้เป็นข้อความทักทายภาษาไทย แล้วกดปุ่ม <strong>▶️ รันโค้ด</strong> เพื่อดูผลลัพธ์!</p>",
+                initialCode: `# บทเรียนที่ 1.1: Hello World
+print("Hello, RianCode World!")
+print("ยินดีต้อนรับสู่การเรียนเขียนโค้ด")`,
+                prevTopicKey: null,
+                nextTopicKey: "1.2",
+                hint: "💡 <strong>คำใบ้บทเรียน 1.1:</strong><br>1. ใช้คำสั่ง <code>print(\"...\")</code> เพื่อแสดงผลข้อความ<br>2. ใส่ข้อความไว้ข้างในเครื่องหมายอัญประกาศคู่ <code>\" \"</code><br>3. สามารถสั่ง print ได้หลายบรรทัดต่อเนื่องกัน!"
+            },
+            "1.2": {
+                badge: "📖 บทที่ 1.2",
+                title: "ตัวแปรและชนิดข้อมูล (Variables & Data Types)",
+                progressText: "2 / 5 หัวข้อ (40%)",
+                progressWidth: "40%",
+                intro: "<p>ในภาษา <strong>Python</strong> การสร้างตัวแปรทำได้ง่ายมาก! คุณไม่ต้องประกาศชนิดข้อมูลล่วงหน้าเหมือนภาษาอื่น เพียงตั้งชื่อตัวแปร แล้วใช้เครื่องหมายเท่ากับ <code>=</code> กำหนดค่าได้ทันที</p>",
+                tip: "<strong>💡 ข้อควรจำที่สำคัญ:</strong> ชื่อตัวแปรควรเป็นภาษาอังกฤษ ห้ามขึ้นต้นด้วยตัวเลข และไม่ควรเว้นวรรค (สามารถใช้ <code>_</code> เชื่อมคำได้ เช่น <code>user_name</code>)",
+                rawSnippet: `# 1. ข้อความ (String)
+name = "Somchai"
+
+# 2. จำนวนเต็ม (Integer)
+age = 20
+
+# 3. ทศนิยม (Float)
+score = 98.5
+
+# 4. ค่าความจริง (Boolean)
+is_passed = True`,
+                task: "<p style='margin:0;'>ลองแก้ไขโค้ดที่หน้าจอฝั่งขวามือ ให้ตัวแปร <code>name</code> เป็นชื่อของคุณ และ <code>score</code> เป็น <strong>100</strong> จากนั้นกดปุ่ม <strong>▶️ รันโค้ด</strong> เพื่อทดสอบผลลัพธ์!</p>",
+                initialCode: `# บทเรียนที่ 1.2: ลองสร้างตัวแปรและแสดงผล
+name = "RianCode Student"
+score = 100
+
+print(f"สวัสดีคุณ {name}!")
+print(f"คะแนนของคุณคือ: {score} XP")`,
+                prevTopicKey: "1.1",
+                nextTopicKey: "1.3",
+                hint: "💡 <strong>คำใบ้บทเรียน 1.2:</strong><br>1. สร้างตัวแปรข้อความใช้ <code>name = \"ชื่อของคุณ\"</code><br>2. สร้างตัวแปรตัวเลขใช้ <code>score = 100</code><br>3. คำสั่ง <code>print(f\"...\")</code> จะแทรกค่าตัวแปรลงในข้อความได้ครับ!"
+            },
+            "1.3": {
+                badge: "📖 บทที่ 1.3",
+                title: "การรับค่าและแสดงผล (Input / Output)",
+                progressText: "3 / 5 หัวข้อ (60%)",
+                progressWidth: "60%",
+                intro: "<p>นอกจากการสั่งแสดงผลด้วย <code>print()</code> แล้ว โปรแกรมส่วนใหญ่ยังต้องรับข้อมูลจากผู้ใช้ด้วยคำสั่ง <code>input()</code> เพื่อนำไปประมวลผลต่อ</p>",
+                tip: "<strong>💡 คำแนะนำ:</strong> ผลลัพธ์ที่ได้จาก <code>input()</code> จะเป็นข้อความ (String) เสมอ หากต้องการนำไปคำนวณ ต้องแปลงเป็นตัวเลขด้วย <code>int()</code> หรือ <code>float()</code>",
+                rawSnippet: `# 1. การรับค่าจากผู้ใช้
+user_name = input("กรุณากรอกชื่อ: ")
+print(f"ยินดีต้อนรับคุณ {user_name} เข้าสู่ระบบ!")`,
+                task: "<p style='margin:0;'>ลองสร้างตัวแปร <code>user_name</code> และใช้คำสั่ง <code>print()</code> แสดงผลข้อความต้อนรับออกทางหน้าจอ!</p>",
+                initialCode: `# บทเรียนที่ 1.3: การสร้างและรับค่าข้อมูล
+user_name = "Alex"
+print(f"สวัสดีคุณ {user_name} ยินดีต้อนรับสู่ระบบ!")`,
+                prevTopicKey: "1.2",
+                nextTopicKey: "1.4",
+                hint: "💡 <strong>คำใบ้บทเรียน 1.3:</strong><br>1. ตัวแปรเก็บชื่อ <code>user_name = \"ชื่อของคุณ\"</code><br>2. พิมพ์แสดงผลต้อนรับด้วย <code>print(f\"สวัสดีคุณ {user_name}\")</code>"
+            },
+            "1.4": {
+                badge: "📖 บทที่ 1.4",
+                title: "โอเปอเรเตอร์และการคำนวณ (Operators & Math)",
+                progressText: "4 / 5 หัวข้อ (80%)",
+                progressWidth: "80%",
+                intro: "<p>Python รองรับการคำนวณทางคณิตศาสตร์พื้นฐาน เช่น บวก (<code>+</code>), ลบ (<code>-</code>), คูณ (<code>*</code>), หาร (<code>/</code>) และยกกำลัง (<code>**</code>)</p>",
+                tip: "<strong>💡 เคล็ดลับ:</strong> ลำดับการคำนวณจะทำในวงเล็บ <code>()</code> ก่อน แล้วตามด้วยคูณ/หาร และบวก/ลบ ตามหลักสากล",
+                rawSnippet: `# การคำนวณทางคณิตศาสตร์
+num1 = 15
+num2 = 5
+
+total = num1 + num2
+multiply = num1 * num2`,
+                task: "<p style='margin:0;'>ลองคำนวณหาผลบวกและผลคูณของตัวเลขสองตัว แล้วสั่ง <code>print()</code> แสดงผลลัพธ์ออกมา!</p>",
+                initialCode: `# บทเรียนที่ 1.4: การคำนวณทางคณิตศาสตร์
+num1 = 15
+num2 = 5
+
+total = num1 + num2
+multiply = num1 * num2
+
+print(f"ผลบวก = {total}")
+print(f"ผลคูณ = {multiply}")`,
+                prevTopicKey: "1.3",
+                nextTopicKey: "1.5",
+                hint: "💡 <strong>คำใบ้บทเรียน 1.4:</strong><br>1. ใช้เครื่องหมาย <code>+</code> สำหรับบวก และ <code>*</code> สำหรับคูณ<br>2. สั่ง <code>print(f\"ผลบวก = {total}\")</code> เพื่อดูคำตอบ!"
+            },
+            "1.5": {
+                badge: "📖 บทที่ 1.5",
+                title: "โจทย์แบบฝึกหัดทบทวนประจำบทเรียน (Quiz Challenge)",
+                progressText: "5 / 5 หัวข้อ (100%)",
+                progressWidth: "100%",
+                intro: "<p>ยินดีด้วย! คุณเดินทางมาถึงหัวข้อสุดท้ายของบทที่ 1 แล้ว ถึงเวลาทดสอบความรู้ด้วยการเขียนโค้ดแก้โจทย์คำนวณส่วนลดสินค้า</p>",
+                tip: "🏆 <strong>โจทย์ท้าทาย:</strong> กำหนด <code>price = 1000</code> คำนวณส่วนลด 10% (<code>discount = price * 0.10</code>) แล้วคำนวณราคาสุทธิ (<code>final_price = price - discount</code>)",
+                rawSnippet: `# คำนวณส่วนลด 10%
+price = 1000
+discount = price * 0.10
+final_price = price - discount`,
+                task: "<p style='margin:0;'>คำนวณหา <code>final_price</code> จากราคา <code>price = 1000</code> แล้วพิมพ์ผลลัพธ์ออกทางหน้าจอเพื่อพิชิต บทที่ 1!</p>",
+                initialCode: `# บทเรียนที่ 1.5: แบบฝึกหัดทบทวน
+price = 1000
+discount = price * 0.10
+final_price = price - discount
+
+print(f"ราคาสินค้า: {price} บาท")
+print(f"ส่วนลด: {discount} บาท")
+print(f"ราคาสุทธิ: {final_price} บาท")`,
+                prevTopicKey: "1.4",
+                nextTopicKey: null,
+                hint: "💡 <strong>คำใบ้บทเรียน 1.5:</strong><br>1. ส่วนลด 10% หาได้จาก <code>price * 0.10</code><br>2. ราคาสุทธิหาได้จาก <code>price - discount</code><br>3. สั่ง print สรุปราคาสุทธิได้เลย!"
+            }
+        };
+
+        let currentTopicKey = "1.2";
+
+        const codeHighlightOverlay = document.getElementById('codeHighlightOverlay');
+        const lineNumbers = document.getElementById('lineNumbers');
+
+        function escapeHtml(str) {
+            return (str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        // Clean Tokenizer-based Official VS Code Syntax Highlighter
+        function renderVsCodeSyntax(code) {
+            if (!code) return '';
+
+            const src = code.replace(/\r\n/g, '\n').replace(/\t/g, '    ');
+            const tokenRegex = /(#.*$)|(f?"(?:[^"\\]|\\.)*"|f?'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(\b(?:if|else|elif|for|while|return|try|except|break|continue|pass|with|yield|raise|global|lambda)\b)|(\b(?:def|class|import|from|as|and|or|not|is|None|True|False)\b)|(\b(?:print|input|len|range|int|float|str|type|list|dict|set|open|max|min|sum)\b(?=\s*\())|(\b\d+\.?\d*\b)|(\b[a-zA-Z_]\w*\b(?=\s*=))/gm;
+
+            let result = '';
+            let lastIndex = 0;
+            let match;
+
+            while ((match = tokenRegex.exec(src)) !== null) {
+                const textBefore = src.substring(lastIndex, match.index);
+                result += escapeHtml(textBefore);
+
+                const [full, comment, str, controlKw, keyword, fn, num, variable] = match;
+
+                if (comment) {
+                    result += `<span class="vs-comment">${escapeHtml(comment)}</span>`;
+                } else if (str) {
+                    let strHtml = escapeHtml(str);
+                    if (str.startsWith('f') || str.includes('{')) {
+                        strHtml = strHtml.replace(/\{([a-zA-Z_]\w*)\}/g, '<span class="vs-fvar">{$1}</span>');
+                    }
+                    result += `<span class="vs-string">${strHtml}</span>`;
+                } else if (controlKw) {
+                    result += `<span class="vs-control">${escapeHtml(controlKw)}</span>`;
+                } else if (keyword) {
+                    result += `<span class="vs-keyword">${escapeHtml(keyword)}</span>`;
+                } else if (fn) {
+                    result += `<span class="vs-function">${escapeHtml(fn)}</span>`;
+                } else if (num) {
+                    result += `<span class="vs-number">${escapeHtml(num)}</span>`;
+                } else if (variable) {
+                    result += `<span class="vs-variable">${escapeHtml(variable)}</span>`;
+                }
+
+                lastIndex = tokenRegex.lastIndex;
+            }
+
+            result += escapeHtml(src.substring(lastIndex));
+            return result;
+        }
+
+        // Update Syntax Overlay & Line Numbers
+        function updateEditorHighlight() {
+            const code = codeEditor.value;
+            codeHighlightOverlay.querySelector('code').innerHTML = renderVsCodeSyntax(code);
+
+            // Sync Line Numbers
+            const lineCount = code.split('\n').length;
+            let numHtml = '';
+            for (let i = 1; i <= Math.max(lineCount, 12); i++) {
+                numHtml += i + '<br>';
+            }
+            lineNumbers.innerHTML = numHtml;
+        }
+
+        // Sync Scroll
+        codeEditor.addEventListener('scroll', () => {
+            codeHighlightOverlay.scrollTop = codeEditor.scrollTop;
+            codeHighlightOverlay.scrollLeft = codeEditor.scrollLeft;
+            lineNumbers.scrollTop = codeEditor.scrollTop;
+        });
+
+        codeEditor.addEventListener('input', updateEditorHighlight);
+
+        // Load Topic Content dynamically
+        function loadTopic(key) {
+            if (!topicData[key]) return;
+            currentTopicKey = key;
+            const data = topicData[key];
+
+            // 1. Update Reading Area
+            topicBadge.innerHTML = data.badge;
+            topicTitle.innerText = data.title;
+            topicIntro.innerHTML = data.intro;
+            topicTip.innerHTML = data.tip;
+            topicCodeSnippet.innerHTML = `<span class="code-lang-tag">python</span>\n` + renderVsCodeSyntax(data.rawSnippet);
+            topicTask.innerHTML = data.task;
+
+            // 2. Update Code Editor & Terminal
+            codeEditor.value = data.initialCode;
+            updateEditorHighlight();
+            terminalOutput.innerHTML = `<span class="terminal-empty-text">กดปุ่ม "▶️ รันโค้ด" เพื่อดูผลลัพธ์ที่นี่...</span>`;
+
+            // 3. Update Progress Bar
+            lessonProgressBar.style.width = data.progressWidth;
+            lessonProgressText.innerText = data.progressText;
+
+            // 4. Update Prev / Next Buttons
+            if (data.prevTopicKey) {
+                btnPrevTopic.style.display = 'inline-flex';
+                btnPrevTopic.innerHTML = `← ${data.prevTopicKey} บทก่อนหน้า`;
+            } else {
+                btnPrevTopic.style.display = 'none';
+            }
+
+            if (data.nextTopicKey) {
+                btnNextTopic.style.display = 'inline-flex';
+                btnNextTopic.innerHTML = `${data.nextTopicKey} หัวข้อถัดไป →`;
+            } else {
+                btnNextTopic.style.display = 'none';
+            }
+
+            // 5. Update Sidebar List Active State
+            const items = topicsList.querySelectorAll('.topic-item');
+            items.forEach(item => {
+                const itemKey = item.dataset.topic;
+                item.classList.remove('active');
+                if (itemKey === key) {
+                    item.classList.add('active');
+                    item.querySelector('.topic-status-icon').innerText = '▶';
+                }
+            });
+
+            // 6. Reset AI Tutor Message & Hide by default
+            aiTutorBody.innerHTML = `
+                <div class="ai-msg">
+                    <div class="ai-avatar">🤖</div>
+                    <div class="ai-bubble">
+                        สลับมาที่ <strong>${data.title}</strong> เรียบร้อยแล้วครับ! หากเกิด Error ผมจะช่วยชี้จุดสังเกตและแนะนำแนวทางแก้ไขให้ครับ!
+                    </div>
+                </div>
+            `;
+            closeAiTutor();
+
+            // Scroll content area back to top
+            document.getElementById('contentScrollArea').scrollTop = 0;
+        }
+
+        // Attach Topic Sidebar Clicks
+        const topicItems = topicsList.querySelectorAll('.topic-item');
+        topicItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const key = item.dataset.topic;
+                loadTopic(key);
+            });
+        });
+
+        // Attach Prev / Next Button Clicks
+        btnPrevTopic.addEventListener('click', () => {
+            const data = topicData[currentTopicKey];
+            if (data && data.prevTopicKey) {
+                loadTopic(data.prevTopicKey);
+            }
+        });
+
+        btnNextTopic.addEventListener('click', () => {
+            const data = topicData[currentTopicKey];
+            if (data && data.nextTopicKey) {
+                loadTopic(data.nextTopicKey);
+            }
+        });
+
+        // AI Tutor Visibility Controls
+        const aiTutorPanel = document.getElementById('aiTutorPanel');
+        const btnCloseAiTutor = document.getElementById('btnCloseAiTutor');
+
+        function openAiTutor() {
+            if (aiTutorPanel) aiTutorPanel.classList.add('active');
+        }
+
+        function closeAiTutor() {
+            if (aiTutorPanel) aiTutorPanel.classList.remove('active');
+        }
+
+        if (btnCloseAiTutor) {
+            btnCloseAiTutor.addEventListener('click', closeAiTutor);
+        }
+
+        function openAiTutorWithError(errLine, hintMsg) {
+            openAiTutor();
+            addAiMessage(`⚠️ <strong>ตรวจพบข้อผิดพลาดที่บรรทัด ${errLine}:</strong><br>${hintMsg}`, 'error');
+        }
+
+        // Append AI Tutor Socratic message
+        function addAiMessage(msgText, type = 'normal') {
+            const bubbleClass = type === 'error' ? 'ai-bubble error-hint' : (type === 'success' ? 'ai-bubble success-hint' : 'ai-bubble');
+            const msgHtml = `
+                <div class="ai-msg">
+                    <div class="ai-avatar">🤖</div>
+                    <div class="${bubbleClass}">${msgText}</div>
+                </div>
+            `;
+            aiTutorBody.insertAdjacentHTML('beforeend', msgHtml);
+            aiTutorBody.scrollTop = aiTutorBody.scrollHeight;
+        }
+
+        // Socratic Error Analyzer (Guides without revealing code)
+        function analyzeCodeSocratic(code) {
+            const lines = code.split('\n');
+            let errors = [];
+
+            // 1. Check for unclosed string quotes
+            lines.forEach((line, idx) => {
+                const lineNum = idx + 1;
+                const dQuotes = (line.match(/"/g) || []).length;
+                const sQuotes = (line.match(/'/g) || []).length;
+                if (dQuotes % 2 !== 0 || sQuotes % 2 !== 0) {
+                    errors.push({
+                        line: lineNum,
+                        type: 'SyntaxError',
+                        hint: `บรรทัดที่ ${lineNum}: มีเครื่องหมายอัญประกาศ (" หรือ ') ไม่ครบคู่ครับ คุณใส่อัญประกาศเปิดไว้ แต่ลืมใส่ตัวปิดที่ท้ายข้อความหรือเปล่า? ลองตรวจทานดูนะ!`
+                    });
+                }
+            });
+
+            // 2. Check for unclosed parentheses
+            lines.forEach((line, idx) => {
+                const lineNum = idx + 1;
+                const openParen = (line.match(/\(/g) || []).length;
+                const closeParen = (line.match(/\)/g) || []).length;
+                if (openParen !== closeParen) {
+                    errors.push({
+                        line: lineNum,
+                        type: 'SyntaxError',
+                        hint: `บรรทัดที่ ${lineNum}: จำนวนวงเล็บเปิด ( และวงเล็บปิด ) ไม่เท่ากันครับ ลองนับดูว่าใส่วงเล็บปิดครบถ้วนแล้วหรือยัง!`
+                    });
+                }
+            });
+
+            return errors;
+        }
+
+        // Simulated Python Code Execution
+        btnRunCode.addEventListener('click', () => {
+            const code = codeEditor.value;
+            terminalOutput.innerHTML = `<span style="color:#64748b;">> Running script main.py...</span>\n`;
+
+            const errors = analyzeCodeSocratic(code);
+
+            setTimeout(() => {
+                if (errors.length > 0) {
+                    const err = errors[0];
+
+                    terminalOutput.innerHTML = `
+                        <span style="color:#f87171;">Traceback (most recent call last):</span>
+                        <span style="color:#f87171;">  File "main.py", line ${err.line}</span>
+                        <span style="color:#ef4444; font-weight:700;">${err.type}: invalid syntax / statement</span>
+
+                        <span style="color:#64748b;">========== Execution Ended With Errors ==========</span>
+                    `;
+
+                    // Open single Floating AI Tutor Widget on error
+                    openAiTutorWithError(err.line, err.hint);
+                } else {
+                    // Success -> Hide AI Tutor so workspace stays clean!
+                    closeAiTutor();
+
+                    let outputLines = [];
+                    const lines = code.split('\n');
+                    let vars = {};
+
+                    lines.forEach(line => {
+                        const trimmed = line.trim();
+                        if (trimmed.startsWith('print(')) {
+                            let printContent = trimmed.substring(6, trimmed.length - 1);
+                            if (printContent.startsWith('f"') || printContent.startsWith("f'")) {
+                                printContent = printContent.substring(2, printContent.length - 1);
+                                printContent = printContent.replace(/\{(\w+)\}/g, (match, p1) => vars[p1] !== undefined ? vars[p1] : p1);
+                            } else if ((printContent.startsWith('"') && printContent.endsWith('"')) || (printContent.startsWith("'") && printContent.endsWith("'"))) {
+                                printContent = printContent.substring(1, printContent.length - 1);
+                            }
+                            outputLines.push(printContent);
+                        } else if (trimmed.includes('=')) {
+                            const [varName, varVal] = trimmed.split('=').map(s => s.trim());
+                            vars[varName] = varVal.replace(/['"]/g, '');
+                        }
+                    });
+
+                    if (outputLines.length > 0) {
+                        terminalOutput.innerText = outputLines.join('\n') + `\n\n[Execution Finished Successfully in 0.04s]`;
+                    } else {
+                        terminalOutput.innerText = `Program finished with no output.`;
+                    }
+                }
+            }, 300);
+        });
+
+        // Hint Button Action
+        btnAiHint.addEventListener('click', () => {
+            openAiTutor();
+            const data = topicData[currentTopicKey];
+            if (data && data.hint) {
+                addAiMessage(data.hint);
+            }
+        });
+
+        // Check Code Action
+        btnAiCheck.addEventListener('click', () => {
+            const code = codeEditor.value;
+            const errors = analyzeCodeSocratic(code);
+
+            openAiTutor();
+            if (errors.length > 0) {
+                addAiMessage(`🔍 <strong>ผลการวิเคราะห์โค้ด:</strong><br>${errors[0].hint}`, 'error');
+            } else {
+                addAiMessage(`🔍 <strong>ผลการวิเคราะห์โค้ด:</strong><br>โครงสร้างโค้ดและไวยากรณ์ของคุณเขียนได้ถูกต้องดีมากครับ! พร้อมรันและส่งคำตอบได้เลย!`, 'success');
+            }
+        });
+
+        const successModalOverlay = document.getElementById('successModalOverlay');
+        const btnSuccessNext = document.getElementById('btnSuccessNext');
+
+        function triggerCelebration() {
+            if (typeof confetti === 'function') {
+                confetti({ particleCount: 70, angle: 60, spread: 60, origin: { x: 0, y: 0.7 } });
+                confetti({ particleCount: 70, angle: 120, spread: 60, origin: { x: 1, y: 0.7 } });
+                setTimeout(() => {
+                    confetti({ particleCount: 100, spread: 100, origin: { y: 0.55 } });
+                }, 250);
+            }
+        }
+
+        // Submit Code Action
+        btnSubmitCode.addEventListener('click', () => {
+            const code = codeEditor.value;
+            const errors = analyzeCodeSocratic(code);
+
+            if (errors.length > 0) {
+                openAiTutor();
+                addAiMessage(`⚠️ <strong>ยังส่งคำตอบไม่ได้ครับ:</strong><br>${errors[0].hint}`, 'error');
+                return;
+            }
+
+            // 1. Trigger Confetti Explosion Effect
+            triggerCelebration();
+
+            // 2. Open Success Modal Card
+            if (successModalOverlay) {
+                successModalOverlay.classList.add('active');
+            }
+
+            // 3. Show Toast Notification
+            toastNotify.style.display = 'flex';
+            setTimeout(() => {
+                toastNotify.style.display = 'none';
+            }, 3000);
+        });
+
+        // Close modal and navigate to next topic
+        if (btnSuccessNext) {
+            btnSuccessNext.addEventListener('click', () => {
+                if (successModalOverlay) {
+                    successModalOverlay.classList.remove('active');
+                }
+                const data = topicData[currentTopicKey];
+                if (data && data.nextTopicKey) {
+                    loadTopic(data.nextTopicKey);
+                }
+            });
+        }
+
+        // Initialize active topic and VS Code Syntax Highlight on initial page load
+        loadTopic(currentTopicKey);
+    </script>
+
+    <!-- Celebratory Success Modal Overlay -->
+    <div class="success-modal-overlay" id="successModalOverlay">
+        <div class="success-modal-card">
+            <div class="success-icon-badge">🎉</div>
+            <h2>ยินดีด้วย! คุณผ่านบทเรียนนี้แล้ว</h2>
+            <p class="success-xp-text">🏆 ได้รับ <strong>+20 XP</strong> คะแนนประสบการณ์</p>
+            <div class="success-actions">
+                <button class="btn-success-next" id="btnSuccessNext">เรียนหัวข้อถัดไป →</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

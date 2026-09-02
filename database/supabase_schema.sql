@@ -4,6 +4,9 @@ CREATE TABLE public.profiles (
   username text,
   full_name text,
   avatar_url text,
+  bio text,
+  github_url text,
+  linkedin_url text,
   role text DEFAULT 'user'::text,
   updated_at timestamp with time zone,
   CONSTRAINT profiles_pkey PRIMARY KEY (id)
@@ -36,14 +39,15 @@ BEGIN
   INSERT INTO public.profiles (id, full_name, avatar_url)
   VALUES (
     NEW.id,
-    NEW.raw_user_meta_data->>'full_name',
-    NEW.raw_user_meta_data->>'avatar_url' -- ดึงรูปจาก Google ทันทีถ้าล็อกอินผ่าน Google
+    COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'name'),
+    COALESCE(NEW.raw_user_meta_data->>'avatar_url', NEW.raw_user_meta_data->>'picture')
   );
   RETURN NEW;
 END;
 $$;
 
 -- Trigger ที่จะเรียกใช้ฟังก์ชันด้านบนเมื่อมี User ใหม่ถูกเพิ่มเข้ามาในระบบ
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();

@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         switchModeBtn.addEventListener('click', (e) => {
             e.preventDefault();
             isLoginMode = !isLoginMode;
-            
+
             errorMessage.style.display = 'none';
 
             if (isLoginMode) {
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Show Error Message
     const showError = (msg) => {
-        if(errorMessage) {
+        if (errorMessage) {
             errorMessage.textContent = msg;
             errorMessage.style.display = 'block';
         } else {
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (authForm) {
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const email = emailInput.value;
             const password = passwordInput.value;
             submitBtn.disabled = true;
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (error) {
                     showError(error.message);
                 } else {
-                    window.location.href = 'index.html'; // Redirect to home
+                    window.location.href = 'dashboard'; // Redirect to dashboard
                 }
             } else {
                 // Sign Up
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     switchModeBtn.click();
                 }
             }
-            
+
             submitBtn.disabled = false;
             submitBtn.textContent = isLoginMode ? 'เข้าสู่ระบบ' : 'สมัครสมาชิก';
         });
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const { data, error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: window.location.origin + '/cp321001/index.html' // Adjust according to your path
+                    redirectTo: window.location.origin + '/cp321001/dashboard' // Redirect to dashboard
                 }
             });
             if (error) showError(error.message);
@@ -117,32 +117,137 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---- Global Auth State & UI Update ----
     const updateUIForAuth = async () => {
         const { data: { session } } = await supabaseClient.auth.getSession();
-        
-        // Find Nav Actions container in index.html
+
+        // Route protection logic
+        if (document.body.dataset.protected === 'true' && !session) {
+            window.location.href = 'login';
+            return;
+        }
+
+        if (document.body.dataset.guestOnly === 'true' && session) {
+            window.location.href = 'dashboard';
+            return;
+        }
+
+        // Find Nav Actions container in index.html or dashboard.html
         const navActions = document.querySelector('.nav-actions');
         if (!navActions) return; // Not on a page with navbar
 
         if (session) {
             // User is logged in
             const user = session.user;
-            let avatarUrl = user.user_metadata?.avatar_url || 'https://ui-avatars.com/api/?name=' + (user.user_metadata?.full_name || user.email);
+
+            // Check Database for profile
+            const { data: profile, error } = await supabaseClient
+                .from('profiles')
+                .select('*')
+                .eq('id', user.id)
+                .single();
+
+            let rawAvatar = null;
+            let fallbackName = 'User';
+
+            if (profile) {
+                rawAvatar = profile.avatar_url;
+                fallbackName = profile.full_name || fallbackName;
+            }
+
+            // Fallback to Session data if DB data is missing
+            if (!rawAvatar) {
+                rawAvatar = user.user_metadata?.avatar_url || user.user_metadata?.picture;
+
+                if (!rawAvatar && user.identities) {
+                    for (const identity of user.identities) {
+                        if (identity.identity_data && (identity.identity_data.avatar_url || identity.identity_data.picture)) {
+                            rawAvatar = identity.identity_data.avatar_url || identity.identity_data.picture;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!profile && user.user_metadata?.full_name) {
+                fallbackName = user.user_metadata.full_name;
+            }
+
+            if (!profile && user.email && fallbackName === 'User') {
+                fallbackName = user.email;
+            }
+
+            let avatarUrl = rawAvatar ? rawAvatar : 'https://ui-avatars.com/api/?background=10b981&color=fff&name=' + encodeURIComponent(fallbackName);
+
+            const isIndexPage = window.location.pathname.endsWith('index.html') || 
+                                window.location.pathname.endsWith('index') || 
+                                window.location.pathname === '/' || 
+                                window.location.pathname.endsWith('/cp321001/') || 
+                                window.location.pathname.endsWith('/cp321001');
+
+            const upgradeBtnHtml = isIndexPage ? '' : `
+                <a href="upgrade.html" class="btn-upgrade-nav">
+                    <span>👑</span>
+                    <span>อัปเกรด PRO</span>
+                </a>
+            `;
 
             navActions.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <img src="${avatarUrl}" alt="Profile" style="width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--primary-color); object-fit: cover;">
-                    <button class="btn btn-outline" id="logoutBtn">ออกจากระบบ</button>
+                <div style="display: flex; align-items: center; gap: 0.85rem;">
+                    ${upgradeBtnHtml}
+                    <div class="profile-dropdown">
+                        <img src="${avatarUrl}" id="profileDropdownBtn" alt="Profile" style="width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--primary-color); object-fit: cover; cursor: pointer;">
+                        <div class="profile-dropdown-menu" id="profileDropdownMenu">
+                            <a href="dashboard" class="dropdown-item">โปรไฟล์ของฉัน</a>
+                            <a href="settings" class="dropdown-item">ตั้งค่าบัญชี</a>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item" id="logoutBtn" style="color: #ef4444;">ออกจากระบบ</button>
+                        </div>
+                    </div>
                 </div>
             `;
+            
+            // Dropdown Toggle Logic
+            const profileBtn = document.getElementById('profileDropdownBtn');
+            const dropdownMenu = document.getElementById('profileDropdownMenu');
+            
+            if (profileBtn && dropdownMenu) {
+                profileBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    dropdownMenu.classList.toggle('show');
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!profileBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                        dropdownMenu.classList.remove('show');
+                    }
+                });
+            }
 
             document.getElementById('logoutBtn').addEventListener('click', async () => {
                 await supabaseClient.auth.signOut();
-                window.location.reload();
+                if (document.body.dataset.protected === 'true') {
+                    window.location.href = 'index';
+                } else {
+                    window.location.reload();
+                }
             });
         } else {
             // User is not logged in
+            const isIndexPage = window.location.pathname.endsWith('index.html') || 
+                                window.location.pathname.endsWith('index') || 
+                                window.location.pathname === '/' || 
+                                window.location.pathname.endsWith('/cp321001/') || 
+                                window.location.pathname.endsWith('/cp321001');
+
+            const upgradeBtnHtml = isIndexPage ? '' : `
+                <a href="upgrade.html" class="btn-upgrade-nav">
+                    <span>👑</span>
+                    <span>อัปเกรด PRO</span>
+                </a>
+            `;
+
             navActions.innerHTML = `
-                <a href="login.html" class="btn btn-outline">เข้าสู่ระบบ</a>
-                <a href="login.html" class="btn btn-primary">เริ่มเรียนฟรี</a>
+                ${upgradeBtnHtml}
+                <a href="login" class="btn btn-outline">เข้าสู่ระบบ</a>
+                <a href="login" class="btn btn-primary">เริ่มเรียนฟรี</a>
             `;
         }
     };

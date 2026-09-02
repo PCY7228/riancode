@@ -1,124 +1,898 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RianCode - เรียนรู้การเขียนโค้ดอย่างสนุกสนาน</title>
+    <title>RianCode - เรียนเขียนโปรแกรม Interactive พร้อมระบบจัดอันดับ</title>
+    <link rel="icon" type="image/png" href="frontend/assets/img/logo.png">
     <meta name="description" content="แพลตฟอร์มเรียนเขียนโปรแกรมที่มาพร้อมกับระบบ Gamification ช่วยให้คุณสนุกกับการเขียนโค้ดและพัฒนาทักษะไปพร้อมกัน">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="frontend/assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="frontend/assets/css/style.css?v=1788372563890">
+
+    <style>
+        /* ===== LANDING PAGE STYLES ===== */
+        * { box-sizing: border-box; }
+        
+        body {
+            background: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar.floating {
+            position: fixed;
+            top: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1200px;
+            border-radius: 25px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,0,0,0.07);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            padding: 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            padding: 0.85rem 2.5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+            flex-shrink: 0;
+        }
+
+        /* CSS fallback logo icon shown when logo.png is missing */
+        .logo-icon-css {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(16,185,129,0.35);
+        }
+
+        .brand-logo-img {
+            height: 38px;
+            width: auto;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+        .brand-logo-img:hover { transform: scale(1.05); }
+        /* Hide CSS fallback if real image loads */
+        .brand-logo-img:not([src=""]) + .logo-icon-css { display: none; }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #475569;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: #10b981; }
+
+        .nav-actions { display: flex; gap: 0.75rem; align-items: center; }
+
+        /* ===== HERO ===== */
+        .hero {
+            padding-top: 120px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            /* Clean subtle dot grid background */
+            background-color: #f8fafc;
+            background-image:
+                radial-gradient(circle at 1px 1px, rgba(16,185,129,0.15) 1px, transparent 0);
+            background-size: 32px 32px;
+        }
+
+        /* Clean fade overlay to blend out the grid edges */
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 50% 50%, rgba(248,250,252,0) 0%, #f8fafc 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Decorative top-right accent circle - clean with border */
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 80px; right: -120px;
+            width: 380px; height: 380px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(16, 185, 129, 0.18);
+            background: radial-gradient(circle at center, rgba(16, 185, 129, 0.05) 0%, transparent 70%);
+            box-shadow: inset 0 0 60px rgba(16,185,129,0.05);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-content { text-align: left; }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.2rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 999px;
+            color: #059669;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.6s ease both;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 3.8rem);
+            font-weight: 900;
+            color: #0f172a;
+            line-height: 1.1;
+            letter-spacing: -1.5px;
+            margin-bottom: 1.25rem;
+            animation: fadeInUp 0.6s 0.1s ease both;
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #10b981, #14b8a6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: #475569;
+            line-height: 1.75;
+            max-width: 520px;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.6s 0.2s ease both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.6s 0.3s ease both;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2.5rem;
+            animation: fadeInUp 0.6s 0.4s ease both;
+        }
+
+        .hero-stat {
+            display: flex;
+            flex-direction: column;
+        }
+        .hero-stat-num {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -1px;
+        }
+        .hero-stat-num span { color: #10b981; }
+        .hero-stat-label {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== CODE WINDOW ===== */
+        .hero-visual { animation: fadeInUp 0.8s 0.2s ease both; }
+
+        .code-window {
+            background: #0f172a;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow:
+                0 30px 80px rgba(0,0,0,0.18),
+                0 0 0 1px rgba(255,255,255,0.05);
+        }
+
+        .window-header {
+            background: #1e293b;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .window-dots { display: flex; gap: 7px; }
+        .dot { width: 13px; height: 13px; border-radius: 50%; }
+        .dot.red { background: #ff5f57; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #28ca41; }
+        .window-title { font-size: 0.85rem; color: #64748b; font-family: var(--font-mono, 'JetBrains Mono', monospace); }
+
+        .window-body { padding: 1.75rem; }
+        .window-body pre { margin: 0; }
+        .window-body code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .keyword { color: #818cf8; }
+        .function { color: #34d399; }
+        .parameter { color: #fb923c; }
+        .string { color: #fbbf24; }
+        .comment { color: #475569; font-style: italic; }
+        .class { color: #38bdf8; }
+
+        /* Floating elements */
+        .floating-element {
+            position: absolute;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            animation: floatItem 5s ease-in-out infinite;
+        }
+
+        .html-icon { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); top: 10%; right: -5%; animation-delay: 0s; }
+        .css-icon { background: rgba(99, 102, 241, 0.1); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.2); bottom: 20%; right: -8%; animation-delay: 1.5s; }
+        .js-icon { background: rgba(251, 191, 36, 0.1); color: #f59e0b; border: 1px solid rgba(251, 191, 36, 0.2); top: 60%; left: -5%; animation-delay: 0.8s; }
+
+        @keyframes floatItem {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        /* ===== FEATURES SECTION ===== */
+        .features {
+            padding: 7rem 2rem;
+            background: white;
+        }
+
+        .features-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-tag {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: #059669;
+            padding: 0.3rem 1rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .section-sub {
+            font-size: 1.05rem;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #10b981, #14b8a6);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(16, 185, 129, 0.3);
+            box-shadow: 0 20px 50px rgba(16, 185, 129, 0.1);
+            background: white;
+        }
+        .feature-card:hover::before { opacity: 1; }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.25rem;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-card p {
+            color: #64748b;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        /* ===== HOW IT WORKS SECTION ===== */
+        .how-it-works {
+            padding: 7rem 2rem;
+            background: #f8fafc;
+        }
+
+        .how-it-works-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+            position: relative;
+        }
+
+        .steps-grid::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: linear-gradient(90deg, #10b981, #14b8a6, #10b981, #14b8a6);
+            background-size: 200% 100%;
+            animation: flowLine 3s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes flowLine {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .step-item {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-num {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid rgba(16, 185, 129, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.25rem;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #10b981;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.15);
+            transition: all 0.3s;
+        }
+        .step-item:hover .step-num {
+            background: linear-gradient(135deg, #10b981, #14b8a6);
+            color: white;
+            border-color: transparent;
+            transform: scale(1.1);
+        }
+
+        .step-item h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+        .step-item p {
+            font-size: 0.88rem;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* ===== LANGUAGES SECTION ===== */
+        .languages {
+            padding: 7rem 2rem;
+            background: white;
+        }
+
+        .languages-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .lang-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 1rem;
+            margin-top: 3rem;
+        }
+
+        .lang-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.5rem 1rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        .lang-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+            border-color: rgba(16, 185, 129, 0.3);
+            background: white;
+        }
+        .lang-icon { font-size: 2.2rem; }
+        .lang-name { font-size: 0.85rem; font-weight: 700; color: #334155; }
+
+        /* ===== CTA SECTION ===== */
+        .cta-section {
+            padding: 7rem 2rem;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a2f 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(16, 185, 129, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(20, 184, 166, 0.15) 0%, transparent 50%);
+        }
+
+        .cta-inner {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-inner h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 900;
+            color: white;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            margin-bottom: 1.25rem;
+        }
+        .cta-inner p {
+            color: rgba(255,255,255,0.65);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+        .btn-white {
+            background: white;
+            color: #10b981;
+            font-weight: 700;
+            padding: 0.875rem 2rem;
+            border-radius: 12px;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.25s;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        .btn-white:hover { transform: translateY(-2px); box-shadow: 0 12px 35px rgba(0,0,0,0.3); }
+
+        .btn-ghost {
+            background: rgba(255,255,255,0.08);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            font-weight: 600;
+            padding: 0.875rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+        .btn-ghost:hover { background: rgba(255,255,255,0.15); }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: #0f172a;
+            color: rgba(255,255,255,0.5);
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.88rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* ===== BUTTONS (Override) ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.75rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.25s;
+            border: none;
+            outline: none;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981, #14b8a6);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4); }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #e2e8f0;
+            color: #475569;
+        }
+        .btn-outline:hover { border-color: #10b981; color: #10b981; background: rgba(16,185,129,0.05); }
+
+        .btn-large {
+            padding: 0.95rem 2.2rem;
+            font-size: 1rem;
+            border-radius: 14px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .steps-grid { grid-template-columns: repeat(2, 1fr); }
+            .steps-grid::before { display: none; }
+            .lang-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .hero-inner { grid-template-columns: 1fr; gap: 2rem; }
+            .hero-visual { display: none; }
+            .hero-content { text-align: center; }
+            .hero-buttons { justify-content: center; }
+            .hero-stats { justify-content: center; }
+            .features-grid { grid-template-columns: 1fr; }
+            .lang-grid { grid-template-columns: repeat(2, 1fr); }
+            .nav-links { display: none; }
+            .nav-actions .btn-outline { display: none; }
+        }
+    </style>
 </head>
+
 <body>
     <!-- Navbar -->
-    <nav class="navbar">
+    <nav class="navbar floating">
         <div class="nav-container">
             <a href="#" class="logo">
-                <span class="logo-icon">&lt;/&gt;</span>
+                <img src="frontend/assets/img/logo.png" alt="RianCode" class="brand-logo-img">
                 RianCode
             </a>
-            <div class="nav-links" id="navLinks">
+            <div class="nav-links">
+                <a href="lessons">บทเรียนทั้งหมด</a>
+                <a href="exercises">แบบฝึกหัด</a>
+                <a href="leaderboard">กระดานผู้นำ</a>
                 <a href="frontend/pages/roadmap.html">Roadmap</a>
-                <a href="#">บทเรียน</a>
-                <a href="#">แบบฝึกหัด</a>
-                <a href="#">กระดานผู้นำ</a>
             </div>
             <div class="nav-actions">
-                <button class="btn btn-outline">เข้าสู่ระบบ</button>
-                <button class="btn btn-primary">เริ่มเรียนฟรี</button>
+                <a href="login" class="btn btn-outline">เข้าสู่ระบบ</a>
+                <a href="login" class="btn btn-primary">เริ่มเรียนฟรี →</a>
             </div>
-            <!-- Mobile Menu Toggle -->
-            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-            </button>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <header class="hero">
-        <div class="hero-content">
-            <div class="hero-badge">🚀 แพลตฟอร์มเรียนโค้ดดิ้งโฉมใหม่</div>
-            <h1 class="hero-title">
-                ปลดล็อกศักยภาพ<br>
-                <span class="text-gradient">การเขียนโค้ดของคุณ</span>
-            </h1>
-            <p class="hero-subtitle">
-                เรียนรู้ ฝึกฝน และก้าวสู่การเป็นนักพัฒนาซอฟต์แวร์มืออาชีพผ่านเส้นทางการเรียนรู้ที่ออกแบบมาเพื่อคุณ พร้อมระบบ Gamification ที่ทำให้การเรียนไม่น่าเบื่ออีกต่อไป
-            </p>
-            <div class="hero-buttons">
-                <button class="btn btn-primary btn-large">
-                    เริ่มต้นการผจญภัย
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                </button>
-                <button class="btn btn-secondary btn-large">ดูหลักสูตรทั้งหมด</button>
-            </div>
-        </div>
-        
-        <!-- Animated Code Window -->
-        <div class="hero-visual">
-            <div class="code-window">
-                <div class="window-header">
-                    <div class="window-dots">
-                        <span class="dot red"></span>
-                        <span class="dot yellow"></span>
-                        <span class="dot green"></span>
-                    </div>
-                    <div class="window-title">main.js</div>
+        <div class="hero-inner">
+            <div class="hero-content">
+                <div class="hero-badge">🚀 แพลตฟอร์มเรียนโค้ดดิ้งโฉมใหม่</div>
+
+                <h1 class="hero-title">
+                    ปลดล็อกศักยภาพ<br>
+                    <span class="text-gradient">การเขียนโค้ด</span><br>
+                    ของคุณวันนี้
+                </h1>
+
+                <p class="hero-subtitle">
+                    เรียนรู้การเขียนโปรแกรมตั้งแต่พื้นฐานถึงระดับสูง ผ่านแบบฝึกหัดแบบ Interactive พร้อมระบบ Gamification ที่ทำให้ทุกวันของการเรียนรู้เป็นเรื่องสนุกและท้าทาย
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="login" class="btn btn-primary btn-large">
+                        เริ่มต้นการผจญภัย
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
+                    <a href="lessons" class="btn btn-outline btn-large">ดูบทเรียนทั้งหมด</a>
                 </div>
-                <div class="window-body">
-                    <pre><code class="language-js">
+
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-num">50<span>+</span></div>
+                        <div class="hero-stat-label">บทเรียน</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-num">200<span>+</span></div>
+                        <div class="hero-stat-label">แบบฝึกหัด</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-num">5<span>+</span></div>
+                        <div class="hero-stat-label">ภาษา</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code Window -->
+            <div class="hero-visual" style="position: relative;">
+                <div class="code-window">
+                    <div class="window-header">
+                        <div class="window-dots">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                        </div>
+                        <div class="window-title">main.js — RianCode</div>
+                    </div>
+                    <div class="window-body">
+                        <pre><code class="language-js">
 <span class="keyword">function</span> <span class="function">startJourney</span>(<span class="parameter">developer</span>) {
-  <span class="keyword">if</span> (!developer.skills.includes(<span class="string">'coding'</span>)) {
-    <span class="function">learn</span>(<span class="string">'JavaScript'</span>);
-    <span class="function">practice</span>(<span class="string">'Algorithms'</span>);
-  }
-  
-  <span class="keyword">return</span> <span class="string">'Ready to build the future!'</span>;
+  <span class="keyword">const</span> skills = [
+    <span class="string">'JavaScript'</span>,
+    <span class="string">'Python'</span>,
+    <span class="string">'SQL'</span>,
+  ];
+
+  skills.<span class="function">forEach</span>(skill => {
+    <span class="function">learn</span>(skill);
+    <span class="function">practice</span>(skill);
+  });
+
+  <span class="keyword">return</span> <span class="string">'🚀 พร้อมสู่ตลาดงาน!'</span>;
 }
 
-<span class="comment">// เริ่มต้นการผจญภัยของคุณได้ที่นี่</span>
+<span class="comment">// เริ่มต้นการผจญภัยของคุณได้เลย</span>
 <span class="function">startJourney</span>(<span class="keyword">new</span> <span class="class">Developer</span>());
-                    </code></pre>
+                        </code></pre>
+                    </div>
                 </div>
+                <div class="floating-element html-icon">&lt;html&gt;</div>
+                <div class="floating-element css-icon">{css}</div>
+                <div class="floating-element js-icon">JS</div>
             </div>
-            <!-- Floating elements -->
-            <div class="floating-element html-icon">&lt;html&gt;</div>
-            <div class="floating-element css-icon">{css}</div>
-            <div class="floating-element js-icon">JS</div>
         </div>
     </header>
 
     <!-- Features Section -->
     <section class="features">
-        <h2 class="section-title">ทำไมต้องเรียนกับ <span class="text-gradient">RianCode</span></h2>
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">🗺️</div>
-                <h3>Roadmap ที่ชัดเจน</h3>
-                <p>เรียนรู้ตามลำดับขั้นตอนที่ถูกต้อง ไม่ต้องงมหาเส้นทางเอง ตั้งแต่พื้นฐานจนถึงระดับสูง</p>
+        <div class="features-inner">
+            <div class="section-header">
+                <div class="section-tag">ทำไมต้อง RianCode</div>
+                <h2 class="section-title">เรียนรู้อย่างชาญฉลาด<br><span class="text-gradient">ก้าวหน้าอย่างรวดเร็ว</span></h2>
+                <p class="section-sub">ระบบที่ออกแบบมาเพื่อให้คุณเรียนรู้ได้มีประสิทธิภาพสูงสุด ไม่ว่าจะเป็นผู้เริ่มต้นหรือนักพัฒนาที่ต้องการพัฒนาทักษะ</p>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">🎮</div>
-                <h3>Gamification</h3>
-                <p>สนุกไปกับการเก็บ XP, สะสม Badge, และไต่อันดับใน Leaderboard ทุกครั้งที่แก้โจทย์สำเร็จ</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">💻</div>
-                <h3>ลงมือทำจริง</h3>
-                <p>พิมพ์โค้ดและดูผลลัพธ์ได้ทันทีบนเบราว์เซอร์ พร้อมแบบฝึกหัดที่ท้าทายความคิด</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🗺️</span>
+                    <h3>Roadmap ที่ชัดเจน</h3>
+                    <p>เรียนรู้ตามลำดับขั้นตอนที่ถูกต้อง ไม่ต้องงมหาเส้นทางเอง ตั้งแต่พื้นฐานจนถึงระดับสูง มีเส้นทางที่วางแผนมาแล้วสำหรับทุกสายอาชีพ</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🎮</span>
+                    <h3>Gamification สนุกทุกวัน</h3>
+                    <p>สนุกไปกับการเก็บ XP, สะสม Badge, และไต่อันดับใน Leaderboard ทุกครั้งที่แก้โจทย์สำเร็จ การเรียนรู้ไม่เคยน่าเบื่ออีกต่อไป</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">💻</span>
+                    <h3>ลงมือทำจริง</h3>
+                    <p>พิมพ์โค้ดและดูผลลัพธ์ได้ทันทีบนเบราว์เซอร์ พร้อมแบบฝึกหัดที่ท้าทายความคิด เสริมสร้างความเข้าใจผ่านการปฏิบัติจริง</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📊</span>
+                    <h3>ติดตามความก้าวหน้า</h3>
+                    <p>แดชบอร์ดแสดงผลความก้าวหน้าแบบ Real-time ให้คุณเห็นชัดว่าเรียนไปถึงไหนแล้ว และควรทบทวนหัวข้อไหนก่อน</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🏆</span>
+                    <h3>แข่งขันกับเพื่อน</h3>
+                    <p>ไต่อันดับกระดานผู้นำประจำสัปดาห์ แข่งขันกับนักเรียนคนอื่นๆ ในการทำแบบฝึกหัด และรับรางวัลพิเศษสำหรับผู้ที่ทำได้ดีที่สุด</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🌐</span>
+                    <h3>หลากหลายภาษา</h3>
+                    <p>ครอบคลุม JavaScript, Python, HTML/CSS, SQL และภาษาอื่นๆ ที่เป็นที่ต้องการในตลาดงาน พร้อม Project จริงให้ฝึกทำ</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Supabase & App Scripts -->
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="how-it-works-inner">
+            <div class="section-header">
+                <div class="section-tag">เริ่มต้นอย่างไร</div>
+                <h2 class="section-title">4 ขั้นตอนง่ายๆ<br><span class="text-gradient">สู่การเป็นนักพัฒนา</span></h2>
+                <p class="section-sub">เริ่มต้นได้ทันทีโดยไม่ต้องมีพื้นฐานใดๆ มาก่อน</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-item">
+                    <div class="step-num">1</div>
+                    <h3>สมัครสมาชิก</h3>
+                    <p>สมัครฟรีภายใน 30 วินาที ไม่ต้องใช้บัตรเครดิต เริ่มเรียนได้ทันที</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">2</div>
+                    <h3>เลือกเส้นทาง</h3>
+                    <p>เลือก Roadmap ที่เหมาะกับเป้าหมาย ไม่ว่าจะเป็น Web, Data, หรือ Mobile</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">3</div>
+                    <h3>เรียนและฝึกฝน</h3>
+                    <p>ดูบทเรียน ทำแบบฝึกหัด เก็บคะแนน XP และ Badge ที่ได้รับในทุกๆ วัน</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">4</div>
+                    <h3>ก้าวสู่ตลาดงาน</h3>
+                    <p>นำ Portfolio และทักษะที่ได้ไปสมัครงาน พร้อม Certificate รับรองผล</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Languages Section -->
+    <section class="languages">
+        <div class="languages-inner">
+            <div class="section-header">
+                <div class="section-tag">ภาษาโปรแกรมมิ่ง</div>
+                <h2 class="section-title">เรียนได้ <span class="text-gradient">หลายภาษา</span></h2>
+                <p class="section-sub">ครอบคลุมภาษาโปรแกรมมิ่งที่เป็นที่ต้องการมากที่สุดในตลาดงาน</p>
+            </div>
+            <div class="lang-grid">
+                <a href="lessons" class="lang-card">
+                    <div class="lang-icon">🌐</div>
+                    <div class="lang-name">HTML & CSS</div>
+                </a>
+                <a href="lessons" class="lang-card">
+                    <div class="lang-icon">⚡</div>
+                    <div class="lang-name">JavaScript</div>
+                </a>
+                <a href="lessons" class="lang-card">
+                    <div class="lang-icon">🐍</div>
+                    <div class="lang-name">Python</div>
+                </a>
+                <a href="lessons" class="lang-card">
+                    <div class="lang-icon">🗄️</div>
+                    <div class="lang-name">SQL</div>
+                </a>
+                <a href="lessons" class="lang-card">
+                    <div class="lang-icon">⚛️</div>
+                    <div class="lang-name">React</div>
+                </a>
+                <a href="lessons" class="lang-card">
+                    <div class="lang-icon">📱</div>
+                    <div class="lang-name">More...</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-inner">
+            <h2>พร้อมจะเริ่มต้น<br>การผจญภัยแล้วหรือยัง?</h2>
+            <p>เข้าร่วมกับนักเรียนนับพันที่กำลังพัฒนาทักษะการเขียนโค้ดกับ RianCode วันนี้ เริ่มเรียนได้ฟรีทันที!</p>
+            <div class="cta-buttons">
+                <a href="login" class="btn-white">🚀 เริ่มเรียนฟรีเลย!</a>
+                <a href="lessons" class="btn-ghost">ดูบทเรียนก่อน</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 RianCode. สงวนลิขสิทธิ์ทุกประการ. สร้างด้วย ❤️ เพื่อนักพัฒนาไทย</p>
+    </footer>
+
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="frontend/assets/js/supabaseClient.js"></script>
     <script src="frontend/assets/js/auth.js"></script>
     <script src="frontend/assets/js/main.js"></script>
 </body>
+
 </html>

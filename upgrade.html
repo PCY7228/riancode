@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>อัปเกรดเป็น PRO - RianCode</title>
+    <link rel="icon" type="image/png" href="frontend/assets/img/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="frontend/assets/css/style.css?v=1788372563889">
+
+    <style>
+        body {
+            background-color: #f8fafc; /* Standard light theme background */
+            font-family: 'Inter', 'Sarabun', sans-serif;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 2rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Gradients */
+        .bg-glow-1 {
+            position: absolute;
+            top: -100px;
+            left: -100px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            filter: blur(40px);
+        }
+
+        .bg-glow-2 {
+            position: absolute;
+            bottom: -150px;
+            right: -150px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(20, 184, 166, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            filter: blur(60px);
+        }
+
+        /* Card */
+        .upgrade-card {
+            position: relative;
+            z-index: 10;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            animation: slideUpFade 0.6s ease-out forwards;
+        }
+
+        @keyframes slideUpFade {
+            0% { opacity: 0; transform: translateY(30px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .pro-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.85rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 999px;
+            color: #059669;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            letter-spacing: 0.5px;
+        }
+
+        .title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin: 0 0 0.5rem 0;
+            background: linear-gradient(135deg, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 1.75rem;
+            line-height: 1.5;
+        }
+
+        .price-container {
+            margin-bottom: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .price {
+            font-size: 2.75rem;
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: baseline;
+            gap: 0.25rem;
+        }
+
+        .price-currency {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .price-period {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #94a3b8;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.75rem 0;
+            text-align: left;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.85rem;
+            color: #334155;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .feature-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .btn-upgrade {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.25);
+            letter-spacing: 0.5px;
+        }
+
+        .btn-upgrade:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(16, 185, 129, 0.35);
+            background: linear-gradient(135deg, #34d399, #10b981);
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            transition: color 0.2s;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        .btn-back:hover {
+            color: #0f172a;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .upgrade-card { padding: 2rem 1.25rem; }
+            .title { font-size: 1.5rem; }
+            .price { font-size: 2.25rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Background Elements -->
+    <div class="bg-glow-1"></div>
+    <div class="bg-glow-2"></div>
+
+    <div class="upgrade-card">
+        <div class="pro-badge">
+            <span>🚀</span> RIANCODE PRO
+        </div>
+        
+        <h1 class="title">ปลดล็อกขีดจำกัด</h1>
+        <p class="subtitle">ก้าวสู่อีกระดับของการเขียนโปรแกรม พร้อมเครื่องมือระดับพรีเมียมที่ช่วยให้คุณเรียนรู้ได้เร็วกว่าเดิม</p>
+        
+        <div class="price-container">
+            <div class="price">
+                <span class="price-currency">฿</span>299<span class="price-period">/เดือน</span>
+            </div>
+        </div>
+
+        <ul class="features-list">
+            <li class="feature-item">
+                <div class="feature-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                ปลดล็อกคำถาม AI Tutor แบบไม่จำกัด
+            </li>
+            <li class="feature-item">
+                <div class="feature-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                โปรเจกต์ระดับสูงสำหรับนำไปใช้งานจริง (Real-world Projects)
+            </li>
+            <li class="feature-item">
+                <div class="feature-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                รับใบประกาศนียบัตร (Certificate) เมื่อเรียนจบ
+            </li>
+            <li class="feature-item">
+                <div class="feature-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                เรียนลื่นไหล ไม่มีโฆษณาคั่นกวนใจ
+            </li>
+        </ul>
+
+        <button class="btn-upgrade" onclick="alert('ระบบชำระเงินจำลอง (Mock) - ขอบคุณที่ให้ความสนใจ RianCode PRO!');">
+            อัปเกรดเลยตอนนี้
+        </button>
+
+        <button class="btn-back" onclick="window.history.back();">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            กลับไปหน้าเดิม
+        </button>
+    </div>
+
+</body>
+
+</html>

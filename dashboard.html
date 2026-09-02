@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แดชบอร์ด - RianCode</title>
+    <link rel="icon" type="image/png" href="frontend/assets/img/logo.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="frontend/assets/css/style.css?v=1788372563889">
+
+    <style>
+        /* ===== Dashboard Navbar ===== */
+        .nav-container.dashboard-nav {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            max-width: 100%;
+            padding: 0.75rem 2rem;
+            gap: 1rem;
+        }
+
+        .dash-hamburger {
+            display: none;
+            /* hidden on desktop */
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-primary);
+            padding: 0.4rem;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .dash-hamburger:hover {
+            background: rgba(16, 185, 129, 0.08);
+        }
+
+        .dash-brand {
+            display: none;
+            /* shown on mobile only */
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            color: var(--text-primary);
+            margin-right: auto;
+        }
+
+        .dash-nav-actions {
+            display: flex !important;
+        }
+
+        /* ===== Sidebar Header ===== */
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 0 0.5rem;
+        }
+
+        .mobile-close-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0.3rem;
+            border-radius: 6px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .mobile-close-btn:hover {
+            background: rgba(0, 0, 0, 0.06);
+            color: var(--text-primary);
+        }
+
+        /* ===== Main Content & Inner ===== */
+        .dashboard-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* ===== Profile Header Card ===== */
+        .dashboard-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            background: var(--surface-color);
+            padding: 1.75rem 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--surface-border);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .dashboard-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .dashboard-welcome h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            line-height: 1.3;
+        }
+
+        .dashboard-welcome p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* ===== Stats Grid ===== */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: var(--surface-color);
+            border: 1px solid var(--surface-border);
+            padding: 1.5rem 1rem;
+            border-radius: 16px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+        }
+
+        .stat-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        /* ===== Section Title ===== */
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        /* ===== Course Cards ===== */
+        .course-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .course-card {
+            background: var(--surface-color);
+            border: 1px solid var(--surface-border);
+            border-radius: 16px;
+            padding: 1.5rem 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .course-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+        }
+
+        .course-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .course-badge {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary-color);
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.2rem 0.65rem;
+            border-radius: 100px;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .course-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .course-progress-bar {
+            height: 6px;
+            background: rgba(16, 185, 129, 0.12);
+            border-radius: 100px;
+            overflow: hidden;
+            margin-bottom: 0.35rem;
+        }
+
+        .course-progress-fill {
+            height: 100%;
+            background: var(--gradient-1);
+            border-radius: 100px;
+            transition: width 0.5s ease;
+        }
+
+        .course-progress-text {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* ===== Mobile Responsive ===== */
+        @media (max-width: 968px) {
+            .dash-hamburger {
+                display: flex;
+            }
+
+            .dash-brand {
+                display: flex;
+            }
+
+            .mobile-close-btn {
+                display: flex !important;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.75rem;
+            }
+
+            .stat-card {
+                padding: 1rem 0.5rem;
+            }
+
+            .stat-icon {
+                width: 38px;
+                height: 38px;
+                border-radius: 10px;
+                margin-bottom: 0.5rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .stat-label {
+                font-size: 0.7rem;
+            }
+
+            .course-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .dashboard-header {
+                padding: 1.25rem;
+                gap: 1rem;
+            }
+
+            .dashboard-avatar {
+                width: 56px;
+                height: 56px;
+            }
+
+            .dashboard-welcome h1 {
+                font-size: 1.2rem;
+            }
+
+            .nav-container.dashboard-nav {
+                padding: 0.5rem 1rem 0.5rem 0.25rem;
+                gap: 1rem;
+            }
+
+            .dash-hamburger {
+                margin-right: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.5rem;
+            }
+
+            .stat-value {
+                font-size: 1.25rem;
+            }
+
+            .stat-label {
+                font-size: 0.65rem;
+                letter-spacing: 0;
+            }
+        }
+
+        /* ===== Sidebar Overlay (Mobile) ===== */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 109;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body data-protected="true">
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container dashboard-nav">
+            <!-- Mobile Hamburger (left side, only visible on mobile) -->
+            <button class="dash-hamburger" id="dashMobileBtn" aria-label="Toggle Sidebar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round" width="22" height="22">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            <!-- User profile/actions (right side) -->
+            <div class="nav-actions dash-nav-actions">
+                <a href="upgrade.html" class="btn-upgrade-nav">
+                    <span>👑</span>
+                    <span>อัปเกรด PRO</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Layout -->
+    <div class="dashboard-layout">
+        <!-- Mobile Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index" class="logo" style="text-decoration:none;">
+                    <img src="frontend/assets/img/logo.png" alt="RianCode" class="brand-logo-img">
+                    <span class="logo-text">RianCode</span>
+                </a>
+                <button id="sidebarCloseBtn" class="mobile-close-btn" aria-label="Close Sidebar">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard" class="sidebar-link active" title="แดชบอร์ด">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span class="sidebar-link-text">แดชบอร์ด</span>
+                </a>
+                <a href="lessons" class="sidebar-link" title="บทเรียนทั้งหมด">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                    </svg>
+                    <span class="sidebar-link-text">บทเรียนทั้งหมด</span>
+                </a>
+                <a href="exercises" class="sidebar-link" title="แบบฝึกหัด">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"></path>
+                        <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8"></path>
+                    </svg>
+                    <span class="sidebar-link-text">แบบฝึกหัด</span>
+                </a>
+                <a href="leaderboard" class="sidebar-link" title="กระดานผู้นำ">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                        </polygon>
+                    </svg>
+                    <span class="sidebar-link-text">กระดานผู้นำ</span>
+                </a>
+                <a href="settings" class="sidebar-link" title="ตั้งค่าบัญชี">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                        </path>
+                    </svg>
+                    <span class="sidebar-link-text">ตั้งค่าบัญชี</span>
+                </a>
+            </nav>
+            <div style="margin-top: auto;">
+                <button id="sidebarToggle" class="sidebar-link"
+                    style="width: 100%; background: none; border: none; cursor: pointer;">
+                    <svg id="toggleIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    <span class="sidebar-link-text">ย่อเมนู</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="dashboard-inner">
+
+                <!-- Profile Header Card -->
+                <div class="dashboard-header">
+                    <img src="" alt="Profile" class="dashboard-avatar" id="dashAvatar">
+                    <div class="dashboard-welcome">
+                        <h1 id="dashName">กำลังโหลด...</h1>
+                        <p id="dashEmail">...</p>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24"
+                                height="24">
+                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-value" id="statLessons">0</div>
+                        <div class="stat-label">บทเรียนที่เรียนจบ</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--primary-color);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24"
+                                height="24">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"></path>
+                                <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-value" style="color:var(--primary-color);" id="statExercises">0</div>
+                        <div class="stat-label">แบบฝึกหัดที่ทำผ่าน</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--primary-color);">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24"
+                                height="24">
+                                <polygon
+                                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                                </polygon>
+                            </svg>
+                        </div>
+                        <div class="stat-value" style="color:var(--primary-color);">LV.1</div>
+                        <div class="stat-label">ระดับของคุณ</div>
+                    </div>
+                </div>
+
+                <!-- Continue Section -->
+                <h2 class="section-title">ดำเนินการเรียนต่อ</h2>
+                <div class="course-list">
+                    <div class="course-card">
+                        <div class="course-info">
+                            <div class="course-badge">JavaScript</div>
+                            <h3 class="course-title">พื้นฐาน JavaScript</h3>
+                            <div class="course-progress-bar">
+                                <div class="course-progress-fill" style="width:0%"></div>
+                            </div>
+                            <p class="course-progress-text">ความคืบหน้า: 0%</p>
+                        </div>
+                        <button class="btn btn-primary">เรียนต่อ</button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Supabase & App Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="frontend/assets/js/supabaseClient.js"></script>
+    <script src="frontend/assets/js/auth.js?v=1788375000000"></script>
+    <script src="frontend/assets/js/main.js"></script>
+
+    <script>
+        // โหลดข้อมูลโปรไฟล์มาแสดงใน Dashboard
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                const user = session.user;
+                const dashName = document.getElementById('dashName');
+                const dashEmail = document.getElementById('dashEmail');
+                const dashAvatar = document.getElementById('dashAvatar');
+
+                // Fetch profile from database
+                const { data: profile, error } = await supabaseClient
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+
+                let rawAvatar = null;
+                let fullName = 'นักเรียน';
+
+                if (profile) {
+                    rawAvatar = profile.avatar_url;
+                    fullName = profile.full_name || fullName;
+                }
+
+                if (!rawAvatar) {
+                    rawAvatar = user.user_metadata?.avatar_url || user.user_metadata?.picture;
+
+                    // Check identities if not found in user_metadata
+                    if (!rawAvatar && user.identities) {
+                        for (const identity of user.identities) {
+                            if (identity.identity_data && (identity.identity_data.avatar_url || identity.identity_data.picture)) {
+                                rawAvatar = identity.identity_data.avatar_url || identity.identity_data.picture;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!profile && user.user_metadata?.full_name) {
+                    fullName = user.user_metadata.full_name;
+                }
+
+                if (!profile && user.email && fullName === 'นักเรียน') {
+                    fullName = user.email.split('@')[0];
+                }
+
+                dashName.textContent = 'ยินดีต้อนรับ, ' + fullName;
+                dashEmail.textContent = user.email;
+
+                let avatarUrl = rawAvatar ? rawAvatar : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(fullName);
+
+                dashAvatar.src = avatarUrl;
+                dashAvatar.style.display = 'block';
+
+                // Self-healing: Insert profile if it doesn't exist
+                if (!profile && error && error.code === 'PGRST116') {
+                    await supabaseClient.from('profiles').insert([
+                        {
+                            id: user.id,
+                            full_name: fullName !== 'นักเรียน' ? fullName : null,
+                            avatar_url: rawAvatar
+                        }
+                    ]);
+                }
+            }
+        });
+        // Sidebar Collapse Logic
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        const toggleIcon = document.getElementById('toggleIcon');
+        const dashMobileBtn = document.getElementById('dashMobileBtn');
+        const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            sidebar.classList.remove('collapsed');
+            sidebarOverlay.classList.add('active');
+            if (toggleIcon) toggleIcon.innerHTML = '<polyline points="15 18 9 12 15 6"></polyline>';
+        }
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('active');
+        }
+
+        if (sidebarToggle && sidebar && toggleIcon) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                if (sidebar.classList.contains('collapsed')) {
+                    toggleIcon.innerHTML = '<polyline points="9 18 15 12 9 6"></polyline>';
+                } else {
+                    toggleIcon.innerHTML = '<polyline points="15 18 9 12 15 6"></polyline>';
+                }
+            });
+        }
+
+        if (dashMobileBtn) dashMobileBtn.addEventListener('click', openSidebar);
+        if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
+        if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+    </script>
+</body>
+
+</html>

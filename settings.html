@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตั้งค่าบัญชี - RianCode</title>
+    <meta name="description" content="จัดการข้อมูลส่วนตัว โปรไฟล์ และความปลอดภัยของบัญชีคุณบน RianCode">
+    <link rel="icon" type="image/png" href="frontend/assets/img/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="frontend/assets/css/style.css?v=1788374000000">
+
+    <style>
+        /* ===== Dashboard Navbar ===== */
+        .nav-container.dashboard-nav {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end; /* Align items to the right by default */
+            max-width: 100%;
+            padding: 0.75rem 2rem;
+            gap: 1rem;
+        }
+        .nav-actions.dash-nav-actions {
+            margin-left: auto;
+        }
+        .dash-hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.4rem;
+            color: var(--text-primary);
+            border-radius: 8px;
+        }
+        /* Mobile close X btn: hide on desktop */
+        .mobile-close-btn {
+            display: none !important;
+        }
+        @media (max-width: 768px) {
+            .dash-hamburger { display: block; margin-right: auto; }
+            .mobile-close-btn { display: flex !important; }
+        }
+
+        /* ===== Settings Layout ===== */
+        .settings-page {
+            padding: 1.5rem 2rem 2rem;
+            background: #f0f4f8;
+            min-height: 100%;
+        }
+
+        /* ===== Compact header: title + tabs in one row ===== */
+        .settings-page-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0;
+        }
+
+        /* ===== Underline Tab Bar ===== */
+        .settings-tabbar {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 1.75rem;
+            margin-top: 1.25rem;
+        }
+        .settings-tabbar .tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.7rem 1.25rem;
+            border: none;
+            background: none;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s;
+            border-radius: 0;
+            margin-bottom: -2px;
+            white-space: nowrap;
+        }
+        .settings-tabbar .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 2px;
+            background: #10b981;
+            border-radius: 2px 2px 0 0;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .settings-tabbar .tab-btn:hover { color: #0f172a; }
+        .settings-tabbar .tab-btn.active {
+            color: #059669;
+            font-weight: 600;
+        }
+        .settings-tabbar .tab-btn.active::after { opacity: 1; }
+        .settings-title-inline {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .settings-title-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, #059669, #10b981);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 6px 16px rgba(16,185,129,0.28);
+            font-size: 1.15rem;
+            flex-shrink: 0;
+        }
+        .settings-title-inline h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
+        }
+        .settings-title-inline p {
+            margin: 0;
+            font-size: 0.82rem;
+            color: #64748b;
+        }
+
+        /* ===== Tab Navigation ===== */
+        .settings-tabs {
+            display: flex;
+            gap: 0.25rem;
+            background: white;
+            padding: 0.35rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            width: fit-content;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            flex-shrink: 0;
+        }
+
+        /* ===== Tab Content ===== */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* ===== Settings Grid ===== */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        /* ===== Profile Card (left) ===== */
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem 1.5rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            text-align: center;
+            position: sticky;
+            top: 1.5rem;
+        }
+        .avatar-ring {
+            position: relative;
+            width: 110px; height: 110px;
+            margin: 0 auto 1.25rem;
+        }
+        .avatar-ring img {
+            width: 110px; height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+        .avatar-ring .avatar-edit-btn {
+            position: absolute;
+            bottom: 2px; right: 2px;
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, #059669, #10b981);
+            border: 2px solid white;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(16,185,129,0.35);
+            transition: transform 0.2s;
+        }
+        .avatar-ring .avatar-edit-btn:hover { transform: scale(1.1); }
+        .avatar-ring .avatar-edit-btn svg { width: 14px; height: 14px; color: white; }
+
+        .profile-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.25rem;
+        }
+        .profile-email {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .profile-stat {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.75rem 0.5rem;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+        .profile-stat .stat-val {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #059669;
+        }
+        .profile-stat .stat-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 0.1rem;
+        }
+
+        .avatar-upload-hint {
+            font-size: 0.78rem;
+            color: #94a3b8;
+        }
+
+        /* ===== Form Card (right) ===== */
+        .form-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+        .form-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.75rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .form-card-icon {
+            width: 38px; height: 38px;
+            background: rgba(16,185,129,0.1);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+        }
+        .form-card-header h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0;
+        }
+        .form-card-header p {
+            font-size: 0.82rem;
+            color: #64748b;
+            margin: 0.1rem 0 0;
+        }
+
+        /* ===== Form Groups ===== */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group:last-of-type { margin-bottom: 0; }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.88rem;
+        }
+        .form-label .label-icon { font-size: 0.85rem; }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.92rem;
+            color: #0f172a;
+            background: #fafbfc;
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #10b981;
+            background: white;
+            box-shadow: 0 0 0 3.5px rgba(16,185,129,0.12);
+        }
+        .form-control:disabled {
+            background: #f1f5f9;
+            color: #94a3b8;
+            cursor: not-allowed;
+            border-color: #e2e8f0;
+        }
+        textarea.form-control {
+            resize: vertical;
+            min-height: 110px;
+            line-height: 1.6;
+        }
+
+        /* Input with icon prefix */
+        .input-with-icon {
+            position: relative;
+        }
+        .input-with-icon .input-icon {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px !important;
+            height: 18px !important;
+            max-width: 18px !important;
+            max-height: 18px !important;
+            color: #94a3b8;
+        }
+        .input-with-icon .form-control {
+            padding-left: 2.5rem;
+        }
+
+        /* ===== Alert Box ===== */
+        .alert-box {
+            display: none;
+            padding: 0.9rem 1.1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .alert-box { display: none; }
+        .alert-success {
+            background: rgba(16,185,129,0.08);
+            color: #059669;
+            border: 1px solid rgba(16,185,129,0.2);
+        }
+        .alert-error {
+            background: rgba(239,68,68,0.08);
+            color: #dc2626;
+            border: 1px solid rgba(239,68,68,0.2);
+        }
+
+        /* ===== Save Button ===== */
+        .form-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.75rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #f1f5f9;
+        }
+        .btn-save {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 14px rgba(16,185,129,0.35);
+        }
+        .btn-save:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(16,185,129,0.4); }
+        .btn-save:disabled { opacity: 0.65; transform: none; cursor: not-allowed; }
+
+        .btn-cancel-plain {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            background: #f1f5f9;
+            color: #64748b;
+            border: none;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.92rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-cancel-plain:hover { background: #e2e8f0; color: #374151; }
+
+        /* ===== Password strength ===== */
+        .password-strength-bar {
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 999px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+        .password-strength-fill {
+            height: 100%;
+            border-radius: 999px;
+            transition: width 0.3s, background 0.3s;
+            width: 0%;
+        }
+        .strength-label {
+            font-size: 0.76rem;
+            color: #94a3b8;
+            margin-top: 0.3rem;
+        }
+
+        /* ===== Danger Zone ===== */
+        .danger-zone-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1.5px solid #fca5a5;
+            box-shadow: 0 4px 15px rgba(239,68,68,0.05);
+            margin-top: 1.5rem;
+        }
+        .danger-zone-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #dc2626;
+            margin: 0 0 0.5rem;
+        }
+        .danger-zone-card p {
+            font-size: 0.88rem;
+            color: #64748b;
+            margin: 0;
+        }
+        .danger-zone-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.25rem;
+            flex-wrap: wrap;
+        }
+        .btn-danger-outline {
+            padding: 0.65rem 1.4rem;
+            background: none;
+            color: #dc2626;
+            border: 1.5px solid #fca5a5;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-danger-outline:hover { background: #fef2f2; border-color: #dc2626; }
+
+        /* ===== Social Link pills ===== */
+        .social-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            padding: 0.35rem 0.8rem;
+            border-radius: 99px;
+            background: #f1f5f9;
+            color: #64748b;
+            margin-top: 0.5rem;
+            text-decoration: none;
+        }
+        .social-pill:hover { background: #e2e8f0; }
+
+        @media (max-width: 900px) {
+            .settings-grid { grid-template-columns: 1fr; }
+            .profile-card { position: static; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .settings-page { padding: 1rem; }
+            .settings-tabs { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body data-protected="true">
+
+    <!-- Top Navbar (clean, same as leaderboard) -->
+    <nav class="navbar">
+        <div class="nav-container dashboard-nav">
+            <button class="dash-hamburger" id="dashHamburgerBtn" aria-label="Toggle Sidebar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            <div class="nav-actions dash-nav-actions">
+                <a href="upgrade.html" class="btn-upgrade-nav">
+                    <span>👑</span>
+                    <span>อัปเกรด PRO</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar (identical to dashboard) -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="index" class="logo" style="text-decoration:none;">
+                    <img src="frontend/assets/img/logo.png" alt="RianCode" class="brand-logo-img" onerror="this.style.display='none'">
+                    <span class="logo-text">RianCode</span>
+                </a>
+                <button id="sidebarCloseBtn" class="mobile-close-btn" aria-label="Close Sidebar">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard" class="sidebar-link" title="แดชบอร์ด">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span class="sidebar-link-text">แดชบอร์ด</span>
+                </a>
+                <a href="lessons" class="sidebar-link" title="บทเรียนทั้งหมด">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                    </svg>
+                    <span class="sidebar-link-text">บทเรียนทั้งหมด</span>
+                </a>
+                <a href="exercises" class="sidebar-link" title="แบบฝึกหัด">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"></path>
+                        <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8"></path>
+                    </svg>
+                    <span class="sidebar-link-text">แบบฝึกหัด</span>
+                </a>
+                <a href="leaderboard" class="sidebar-link" title="กระดานผู้นำ">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    <span class="sidebar-link-text">กระดานผู้นำ</span>
+                </a>
+                <a href="settings" class="sidebar-link active" title="ตั้งค่าบัญชี">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    <span class="sidebar-link-text">ตั้งค่าบัญชี</span>
+                </a>
+            </nav>
+            <div style="margin-top: auto;">
+                <button id="sidebarToggle" class="sidebar-link" style="width:100%;background:none;border:none;cursor:pointer;">
+                    <svg id="toggleIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    <span class="sidebar-link-text">ย่อเมนู</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <div class="settings-page">
+                <!-- Page Header with underline tabs -->
+                <div class="settings-page-header">
+                    <div class="settings-title-inline">
+                        <div class="settings-title-icon">⚙️</div>
+                        <div>
+                            <h1>ตั้งค่าบัญชี</h1>
+                            <p>จัดการข้อมูลส่วนตัว โปรไฟล์ และความปลอดภัยของบัญชี</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Underline Tab Bar -->
+                <div class="settings-tabbar" id="settingsTabs">
+                    <button class="tab-btn active" data-tab="profile">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        ข้อมูลโปรไฟล์
+                    </button>
+                    <button class="tab-btn" data-tab="security">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        ความปลอดภัย
+                    </button>
+                </div>
+
+                <!-- ========================= PROFILE TAB ========================= -->
+                <div class="tab-panel active" id="tab-profile">
+                    <div class="settings-grid">
+                        <!-- Left: Profile Card -->
+                        <div class="profile-card">
+                            <div class="avatar-ring">
+                                <img id="avatarPreview" src="https://ui-avatars.com/api/?background=10b981&color=fff&name=U&size=200" alt="Avatar">
+                                <label for="avatarInput" class="avatar-edit-btn" title="เปลี่ยนรูปโปรไฟล์">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                                    </svg>
+                                </label>
+                                <input type="file" id="avatarInput" accept="image/png,image/jpeg,image/webp" style="display:none">
+                            </div>
+
+                            <div class="profile-name" id="profileNameDisplay">กำลังโหลด...</div>
+                            <div class="profile-email" id="profileEmailDisplay">-</div>
+
+                            <div class="profile-stat-grid">
+                                <div class="profile-stat">
+                                    <div class="stat-val" id="statsLessons">-</div>
+                                    <div class="stat-label">บทเรียน</div>
+                                </div>
+                                <div class="profile-stat">
+                                    <div class="stat-val" id="statsXP">-</div>
+                                    <div class="stat-label">XP</div>
+                                </div>
+                            </div>
+
+                            <p class="avatar-upload-hint">รองรับ JPG, PNG หรือ WebP ขนาดสูงสุด <strong>5MB</strong></p>
+                        </div>
+
+                        <!-- Right: Form -->
+                        <div>
+                            <!-- Alert -->
+                            <div id="profileAlert" class="alert-box"></div>
+
+                            <!-- Basic Info -->
+                            <div class="form-card" style="margin-bottom:1.25rem;">
+                                <div class="form-card-header">
+                                    <div class="form-card-icon">👤</div>
+                                    <div>
+                                        <h2>ข้อมูลพื้นฐาน</h2>
+                                        <p>ชื่อและข้อมูลที่จะแสดงบนโปรไฟล์ของคุณ</p>
+                                    </div>
+                                </div>
+                                <form id="profileForm">
+                                    <div class="form-group">
+                                        <label class="form-label" for="email"><span class="label-icon">✉️</span> อีเมล (ไม่สามารถเปลี่ยนได้)</label>
+                                        <input type="email" id="email" class="form-control" disabled>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label" for="fullName"><span class="label-icon">🪪</span> ชื่อ-นามสกุล</label>
+                                            <input type="text" id="fullName" class="form-control" placeholder="ชื่อเต็มของคุณ">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="username"><span class="label-icon">🏷️</span> Username</label>
+                                            <input type="text" id="username" class="form-control" placeholder="ชื่อที่จะปรากฏในระบบ">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="bio"><span class="label-icon">📝</span> เกี่ยวกับคุณ (Bio)</label>
+                                        <textarea id="bio" class="form-control" placeholder="แนะนำตัวเองสั้นๆ เช่น ทักษะ ความสนใจ หรือเป้าหมายในการเรียนโค้ด..."></textarea>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Social Links -->
+                            <div class="form-card">
+                                <div class="form-card-header">
+                                    <div class="form-card-icon">🔗</div>
+                                    <div>
+                                        <h2>Social Links</h2>
+                                        <p>เพิ่มลิงก์โซเชียลของคุณ เพื่อให้คนอื่นติดตามได้</p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="github">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                                        GitHub
+                                    </label>
+                                    <div class="input-with-icon">
+                                        <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                        <input type="url" id="github" class="form-control" placeholder="https://github.com/yourusername">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="linkedin">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                                        LinkedIn
+                                    </label>
+                                    <div class="input-with-icon">
+                                        <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                        <input type="url" id="linkedin" class="form-control" placeholder="https://linkedin.com/in/yourusername">
+                                    </div>
+                                </div>
+
+                                <div class="form-footer">
+                                    <button type="button" class="btn-cancel-plain" onclick="loadUserData()">รีเซ็ต</button>
+                                    <button type="submit" form="profileForm" id="saveProfileBtn" class="btn-save">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                        บันทึกการเปลี่ยนแปลง
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================= SECURITY TAB ========================= -->
+                <div class="tab-panel" id="tab-security">
+                    <div class="settings-grid">
+                        <!-- Left info card -->
+                        <div class="profile-card" style="text-align:left;">
+                            <div style="font-size:2.5rem;margin-bottom:1rem;">🔒</div>
+                            <h3 style="font-size:1.1rem;font-weight:700;color:#0f172a;margin:0 0 0.5rem;">ความปลอดภัยของบัญชี</h3>
+                            <p style="font-size:0.88rem;color:#64748b;line-height:1.6;margin:0 0 1.5rem;">ตั้งค่ารหัสผ่านที่แข็งแกร่ง อย่างน้อย 8 ตัวอักษร ผสมตัวอักษร ตัวเลข และอักขระพิเศษ</p>
+                            <div style="background:#f0fdf4;border-radius:12px;padding:1rem;border:1px solid rgba(16,185,129,0.2);">
+                                <p style="font-size:0.82rem;color:#059669;font-weight:600;margin:0 0 0.5rem;">💡 เคล็ดลับ</p>
+                                <ul style="margin:0;padding-left:1.2rem;font-size:0.82rem;color:#064e3b;line-height:1.8;">
+                                    <li>ใช้รหัสผ่านที่ไม่ซ้ำกับเว็บอื่น</li>
+                                    <li>เปลี่ยนรหัสผ่านทุก 3-6 เดือน</li>
+                                    <li>ไม่แชร์รหัสผ่านกับผู้อื่น</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Right: Password Form -->
+                        <div>
+                            <div id="passwordAlert" class="alert-box"></div>
+                            <div class="form-card">
+                                <div class="form-card-header">
+                                    <div class="form-card-icon">🔑</div>
+                                    <div>
+                                        <h2>เปลี่ยนรหัสผ่าน</h2>
+                                        <p>ตั้งค่ารหัสผ่านใหม่สำหรับบัญชีของคุณ</p>
+                                    </div>
+                                </div>
+                                <form id="passwordForm">
+                                    <div class="form-group">
+                                        <label class="form-label" for="newPassword">🔐 รหัสผ่านใหม่</label>
+                                        <input type="password" id="newPassword" class="form-control" placeholder="อย่างน้อย 6 ตัวอักษร" required minlength="6">
+                                        <div class="password-strength-bar">
+                                            <div class="password-strength-fill" id="strengthFill"></div>
+                                        </div>
+                                        <div class="strength-label" id="strengthLabel">ยังไม่ได้กรอกรหัสผ่าน</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="confirmPassword">✅ ยืนยันรหัสผ่านใหม่</label>
+                                        <input type="password" id="confirmPassword" class="form-control" placeholder="กรอกรหัสผ่านอีกครั้ง" required minlength="6">
+                                    </div>
+                                    <div class="form-footer">
+                                        <button type="submit" id="savePasswordBtn" class="btn-save">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                            อัปเดตรหัสผ่าน
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Danger Zone -->
+                            <div class="danger-zone-card">
+                                <h3>⚠️ Danger Zone</h3>
+                                <p>การกระทำต่อไปนี้ไม่สามารถย้อนกลับได้ โปรดใช้ด้วยความระมัดระวัง</p>
+                                <div class="danger-zone-actions">
+                                    <button class="btn-danger-outline" onclick="alert('ฟีเจอร์นี้กำลังพัฒนา')">ลบบัญชี</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end tabs -->
+
+            </div><!-- end .settings-page -->
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="frontend/assets/js/supabaseClient.js"></script>
+    <script src="frontend/assets/js/auth.js"></script>
+
+    <script>
+    // ============================================================
+    //  Tab switching
+    // ============================================================
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+        });
+    });
+
+    // ============================================================
+    //  Sidebar Toggle
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', () => {
+        const sidebar = document.getElementById('sidebar');
+        const hamburger = document.getElementById('dashHamburgerBtn');
+        const closeBtn = document.getElementById('sidebarCloseBtn');
+        const toggleBtn = document.getElementById('sidebarToggle');
+
+        if (hamburger) hamburger.addEventListener('click', () => sidebar.classList.toggle('open'));
+        if (closeBtn) closeBtn.addEventListener('click', () => sidebar.classList.remove('open'));
+        if (toggleBtn) toggleBtn.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
+    });
+
+    // ============================================================
+    //  Password Strength Meter
+    // ============================================================
+    const newPasswordInput = document.getElementById('newPassword');
+    const strengthFill = document.getElementById('strengthFill');
+    const strengthLabel = document.getElementById('strengthLabel');
+
+    newPasswordInput.addEventListener('input', () => {
+        const val = newPasswordInput.value;
+        let score = 0;
+        if (val.length >= 6) score++;
+        if (val.length >= 10) score++;
+        if (/[A-Z]/.test(val)) score++;
+        if (/[0-9]/.test(val)) score++;
+        if (/[^a-zA-Z0-9]/.test(val)) score++;
+
+        const levels = [
+            { pct: '0%',   color: '#e2e8f0', label: 'ยังไม่ได้กรอก' },
+            { pct: '25%',  color: '#ef4444', label: 'อ่อนแอมาก' },
+            { pct: '50%',  color: '#f97316', label: 'พอใช้' },
+            { pct: '75%',  color: '#eab308', label: 'ดี' },
+            { pct: '90%',  color: '#22c55e', label: 'แข็งแกร่ง' },
+            { pct: '100%', color: '#059669', label: 'แข็งแกร่งมาก 🔒' },
+        ];
+        const level = val.length === 0 ? levels[0] : levels[Math.min(score, 5)];
+        strengthFill.style.width = level.pct;
+        strengthFill.style.background = level.color;
+        strengthLabel.textContent = level.label;
+        strengthLabel.style.color = level.color;
+    });
+
+    // ============================================================
+    //  Settings JS Logic
+    // ============================================================
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    let currentUser = null;
+    let selectedAvatarFile = null;
+
+    const showAlert = (el, msg, type) => {
+        el.textContent = msg;
+        el.style.display = 'flex';
+        el.className = 'alert-box alert-' + type;
+        el.innerHTML = (type === 'success' ? '✅ ' : '❌ ') + msg;
+        setTimeout(() => { el.style.display = 'none'; }, 5000);
+    };
+
+    async function loadUserData() {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) { window.location.href = 'login'; return; }
+        currentUser = session.user;
+
+        document.getElementById('email').value = currentUser.email;
+        document.getElementById('profileEmailDisplay').textContent = currentUser.email;
+
+        const { data: profile } = await supabaseClient
+            .from('profiles').select('*').eq('id', currentUser.id).single();
+
+        if (profile) {
+            document.getElementById('fullName').value    = profile.full_name || '';
+            document.getElementById('username').value    = profile.username  || '';
+            document.getElementById('bio').value         = profile.bio       || '';
+            document.getElementById('github').value      = profile.github_url    || '';
+            document.getElementById('linkedin').value    = profile.linkedin_url  || '';
+
+            const displayName = profile.full_name || profile.username || currentUser.email;
+            document.getElementById('profileNameDisplay').textContent = displayName;
+
+            let avatarUrl = profile.avatar_url || currentUser.user_metadata?.avatar_url;
+            if (avatarUrl) {
+                document.getElementById('avatarPreview').src = avatarUrl;
+            } else {
+                document.getElementById('avatarPreview').src =
+                    `https://ui-avatars.com/api/?background=10b981&color=fff&name=${encodeURIComponent(displayName)}&size=200`;
+            }
+        }
+    }
+
+    // Avatar preview
+    document.getElementById('avatarInput').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (file.size > MAX_FILE_SIZE) {
+            showAlert(document.getElementById('profileAlert'), 'ไฟล์มีขนาดใหญ่เกินไป (สูงสุด 5MB)', 'error');
+            e.target.value = '';
+            return;
+        }
+        selectedAvatarFile = file;
+        const reader = new FileReader();
+        reader.onload = (ev) => { document.getElementById('avatarPreview').src = ev.target.result; };
+        reader.readAsDataURL(file);
+    });
+
+    // Save Profile
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('saveProfileBtn');
+        const alert = document.getElementById('profileAlert');
+        btn.disabled = true;
+        btn.innerHTML = '⏳ กำลังบันทึก...';
+
+        try {
+            let avatarUrl = document.getElementById('avatarPreview').src;
+
+            if (selectedAvatarFile) {
+                const ext = selectedAvatarFile.name.split('.').pop();
+                const path = `${currentUser.id}/${Date.now()}.${ext}`;
+                const { error: upErr } = await supabaseClient.storage.from('avatars').upload(path, selectedAvatarFile, { upsert: true });
+                if (upErr) throw upErr;
+                const { data: pub } = supabaseClient.storage.from('avatars').getPublicUrl(path);
+                avatarUrl = pub.publicUrl;
+            }
+
+            const { error } = await supabaseClient.from('profiles').upsert({
+                id: currentUser.id,
+                full_name:    document.getElementById('fullName').value,
+                username:     document.getElementById('username').value,
+                bio:          document.getElementById('bio').value,
+                github_url:   document.getElementById('github').value,
+                linkedin_url: document.getElementById('linkedin').value,
+                avatar_url:   avatarUrl,
+                updated_at:   new Date()
+            });
+            if (error) throw error;
+
+            showAlert(alert, 'อัปเดตโปรไฟล์สำเร็จแล้ว!', 'success');
+            selectedAvatarFile = null;
+
+            // Update sidebar display name
+            const name = document.getElementById('fullName').value;
+            document.getElementById('profileNameDisplay').textContent = name;
+        } catch (err) {
+            showAlert(alert, 'เกิดข้อผิดพลาด: ' + err.message, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> บันทึกการเปลี่ยนแปลง`;
+        }
+    });
+
+    // Change Password
+    document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('savePasswordBtn');
+        const alert = document.getElementById('passwordAlert');
+        const newPass = document.getElementById('newPassword').value;
+        const confirmPass = document.getElementById('confirmPassword').value;
+
+        if (newPass !== confirmPass) {
+            showAlert(alert, 'รหัสผ่านใหม่และการยืนยันไม่ตรงกัน', 'error');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '⏳ กำลังอัปเดต...';
+
+        try {
+            const { error } = await supabaseClient.auth.updateUser({ password: newPass });
+            if (error) throw error;
+            showAlert(alert, 'อัปเดตรหัสผ่านสำเร็จแล้ว!', 'success');
+            document.getElementById('passwordForm').reset();
+            document.getElementById('strengthFill').style.width = '0%';
+            document.getElementById('strengthLabel').textContent = 'ยังไม่ได้กรอกรหัสผ่าน';
+        } catch (err) {
+            showAlert(alert, 'เกิดข้อผิดพลาด: ' + err.message, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> อัปเดตรหัสผ่าน`;
+        }
+    });
+
+    // Init
+    loadUserData();
+    </script>
+</body>
+</html>
