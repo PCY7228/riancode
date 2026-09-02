@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (error) {
                     showError(error.message);
                 } else {
-                    window.location.href = 'dashboard'; // Redirect to dashboard
+                    window.location.href = 'dashboard.html'; // Redirect to dashboard
                 }
             } else {
                 // Sign Up
@@ -104,10 +104,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle Google Login
     if (googleLoginBtn) {
         googleLoginBtn.addEventListener('click', async () => {
+            const redirectUrl = new URL('dashboard.html', window.location.href).href;
             const { data, error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: window.location.origin + '/cp321001/dashboard' // Redirect to dashboard
+                    redirectTo: redirectUrl
                 }
             });
             if (error) showError(error.message);
@@ -120,12 +121,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Route protection logic
         if (document.body.dataset.protected === 'true' && !session) {
-            window.location.href = 'login';
+            window.location.href = 'login.html';
             return;
         }
 
         if (document.body.dataset.guestOnly === 'true' && session) {
-            window.location.href = 'dashboard';
+            window.location.href = 'dashboard.html';
             return;
         }
 
@@ -195,8 +196,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="profile-dropdown">
                         <img src="${avatarUrl}" id="profileDropdownBtn" alt="Profile" style="width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--primary-color); object-fit: cover; cursor: pointer;">
                         <div class="profile-dropdown-menu" id="profileDropdownMenu">
-                            <a href="dashboard" class="dropdown-item">โปรไฟล์ของฉัน</a>
-                            <a href="settings" class="dropdown-item">ตั้งค่าบัญชี</a>
+                            <a href="dashboard.html" class="dropdown-item">โปรไฟล์ของฉัน</a>
+                            <a href="settings.html" class="dropdown-item">ตั้งค่าบัญชี</a>
                             <div class="dropdown-divider"></div>
                             <button class="dropdown-item" id="logoutBtn" style="color: #ef4444;">ออกจากระบบ</button>
                         </div>
@@ -224,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('logoutBtn').addEventListener('click', async () => {
                 await supabaseClient.auth.signOut();
                 if (document.body.dataset.protected === 'true') {
-                    window.location.href = 'index';
+                    window.location.href = 'index.html';
                 } else {
                     window.location.reload();
                 }
@@ -246,8 +247,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             navActions.innerHTML = `
                 ${upgradeBtnHtml}
-                <a href="login" class="btn btn-outline">เข้าสู่ระบบ</a>
-                <a href="login" class="btn btn-primary">เริ่มเรียนฟรี</a>
+                <a href="login.html" class="btn btn-outline">เข้าสู่ระบบ</a>
+                <a href="login.html" class="btn btn-primary">เริ่มเรียนฟรี</a>
             `;
         }
     };
