@@ -6,13 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เข้าสู่ระบบ / สมัครสมาชิก - RianCode</title>
     <link rel="icon" type="image/png" href="frontend/assets/img/logo.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -22,7 +29,7 @@
             overflow: hidden;
         }
 
-        /* ── Left decorative panel ── */
+        /* ── Left decorative panel  code-card── */
         .auth-left {
             display: none;
             position: relative;
@@ -37,7 +44,9 @@
         }
 
         @media (min-width: 900px) {
-            .auth-left { display: flex; }
+            .auth-left {
+                display: flex;
+            }
         }
 
         /* floating orbs */
@@ -47,7 +56,7 @@
             width: 420px;
             height: 420px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.08);
+            background: rgba(255, 255, 255, 0.08);
             top: -100px;
             right: -120px;
         }
@@ -58,7 +67,7 @@
             width: 280px;
             height: 280px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.06);
+            background: rgba(255, 255, 255, 0.06);
             bottom: -80px;
             left: -60px;
         }
@@ -73,8 +82,8 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: rgba(255,255,255,0.18);
-            border: 1px solid rgba(255,255,255,0.28);
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.28);
             border-radius: 999px;
             padding: 0.4rem 1rem;
             font-size: 0.8rem;
@@ -120,7 +129,7 @@
             width: 22px;
             height: 22px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.25);
+            background: rgba(255, 255, 255, 0.25);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -129,32 +138,18 @@
         }
 
         /* floating code card */
-        .code-card {
-            position: absolute;
-            bottom: 2.5rem;
-            right: -1rem;
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 14px;
-            padding: 1rem 1.25rem;
-            font-family: 'Courier New', monospace;
-            font-size: 0.78rem;
-            color: #a7f3d0;
-            line-height: 1.7;
-            min-width: 240px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            animation: float 4s ease-in-out infinite;
-        }
 
-        .code-card .cm { color: #64748b; }
-        .code-card .kw { color: #818cf8; }
-        .code-card .st { color: #f472b6; }
-        .code-card .fn { color: #34d399; }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
         /* ── Right (form) panel ── */
@@ -171,7 +166,9 @@
         }
 
         @media (min-width: 900px) {
-            .auth-right { max-width: 440px; }
+            .auth-right {
+                max-width: 440px;
+            }
         }
 
         /* back link */
@@ -189,7 +186,9 @@
             transition: color 0.2s;
         }
 
-        .back-link:hover { color: #10b981; }
+        .back-link:hover {
+            color: #10b981;
+        }
 
         /* logo */
         .auth-logo {
@@ -239,7 +238,7 @@
         .auth-tab.active {
             background: #fff;
             color: #10b981;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         /* Google button */
@@ -269,7 +268,10 @@
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.12);
         }
 
-        .btn-google img { width: 20px; height: 20px; }
+        .btn-google img {
+            width: 20px;
+            height: 20px;
+        }
 
         /* divider */
         .divider {
@@ -282,7 +284,8 @@
             margin-bottom: 1.5rem;
         }
 
-        .divider::before, .divider::after {
+        .divider::before,
+        .divider::after {
             content: '';
             flex: 1;
             height: 1px;
@@ -335,7 +338,9 @@
             box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
         }
 
-        .form-control::placeholder { color: #9ca3af; }
+        .form-control::placeholder {
+            color: #9ca3af;
+        }
 
         /* password toggle */
         .toggle-pw {
@@ -351,7 +356,9 @@
             padding: 0;
         }
 
-        .toggle-pw:hover { color: #6b7280; }
+        .toggle-pw:hover {
+            color: #6b7280;
+        }
 
         /* forgot link */
         .form-group-row {
@@ -368,7 +375,9 @@
             text-decoration: none;
         }
 
-        .forgot-link:hover { text-decoration: underline; }
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
 
         /* submit button */
         .btn-submit {
@@ -392,7 +401,9 @@
             box-shadow: 0 8px 20px rgba(16, 185, 129, 0.45);
         }
 
-        .btn-submit:active { transform: translateY(0); }
+        .btn-submit:active {
+            transform: translateY(0);
+        }
 
         /* switch text */
         .auth-switch {
@@ -408,7 +419,9 @@
             margin-left: 0.3rem;
         }
 
-        .auth-switch a:hover { text-decoration: underline; }
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
 
         /* error */
         #errorMessage {
@@ -423,8 +436,13 @@
         }
 
         /* form panel toggle */
-        .form-panel { display: none; }
-        .form-panel.active { display: block; }
+        .form-panel {
+            display: none;
+        }
+
+        .form-panel.active {
+            display: block;
+        }
     </style>
 </head>
 
@@ -436,7 +454,8 @@
                 🎓 แพลตฟอร์มเรียน Python ระดับมือโปร
             </div>
             <h1 class="left-title">เรียนโค้ดสนุก<br><span>พิชิตทุกทักษะ</span></h1>
-            <p class="left-desc">RianCode คือแพลตฟอร์มเรียนเขียนโค้ดที่ออกแบบมาเพื่อผู้เริ่มต้น ด้วย AI Tutor คอยช่วยแนะนำทุกขั้นตอน</p>
+            <p class="left-desc">RianCode คือแพลตฟอร์มเรียนเขียนโค้ดที่ออกแบบมาเพื่อผู้เริ่มต้น ด้วย AI Tutor
+                คอยช่วยแนะนำทุกขั้นตอน</p>
             <ul class="feature-list">
                 <li>
                     <span class="check">✓</span>
@@ -457,19 +476,12 @@
             </ul>
         </div>
 
-        <!-- decorative floating code card -->
-        <div class="code-card">
-            <div><span class="cm"># บทเรียนที่ 1.2</span></div>
-            <div><span class="kw">name</span> = <span class="st">"RianCode"</span></div>
-            <div><span class="kw">xp</span> = <span class="fn">100</span></div>
-            <div><span class="fn">print</span>(<span class="st">f"สวัสดี {name}! 🎉"</span>)</div>
-            <div style="color:#a7f3d0; margin-top:4px;">&gt; สวัสดี RianCode! 🎉</div>
-        </div>
     </div>
 
     <div class="auth-right">
         <a href="index" class="back-link">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
@@ -504,8 +516,10 @@
                     <label for="email">อีเมล</label>
                     <div class="input-wrapper">
                         <span class="input-icon">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                </path>
                                 <polyline points="22,6 12,13 2,6"></polyline>
                             </svg>
                         </span>
@@ -517,14 +531,16 @@
                     <label for="password">รหัสผ่าน</label>
                     <div class="input-wrapper">
                         <span class="input-icon">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                             </svg>
                         </span>
                         <input type="password" id="password" class="form-control" placeholder="••••••••" required>
                         <button type="button" class="toggle-pw" onclick="togglePw('password', this)">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                 <circle cx="12" cy="12" r="3"></circle>
                             </svg>
@@ -533,7 +549,8 @@
                 </div>
 
                 <div class="form-group-row">
-                    <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.85rem;color:#6b7280;cursor:pointer;">
+                    <label
+                        style="display:flex;align-items:center;gap:0.4rem;font-size:0.85rem;color:#6b7280;cursor:pointer;">
                         <input type="checkbox" style="accent-color:#10b981;"> จำฉันไว้ในระบบ
                     </label>
                     <a href="#" class="forgot-link">ลืมรหัสผ่าน?</a>
@@ -550,7 +567,8 @@
                     <label for="fullName">ชื่อ-นามสกุล</label>
                     <div class="input-wrapper">
                         <span class="input-icon">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
@@ -563,8 +581,10 @@
                     <label for="regEmail">อีเมล</label>
                     <div class="input-wrapper">
                         <span class="input-icon">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                </path>
                                 <polyline points="22,6 12,13 2,6"></polyline>
                             </svg>
                         </span>
@@ -576,14 +596,16 @@
                     <label for="regPassword">รหัสผ่าน</label>
                     <div class="input-wrapper">
                         <span class="input-icon">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                             </svg>
                         </span>
                         <input type="password" id="regPassword" class="form-control" placeholder="อย่างน้อย 8 ตัวอักษร">
                         <button type="button" class="toggle-pw" onclick="togglePw('regPassword', this)">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                 <circle cx="12" cy="12" r="3"></circle>
                             </svg>
